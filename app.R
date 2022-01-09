@@ -2,6 +2,8 @@
 library(shiny)
 library(shinyWidgets)
 library(dplyr)
+library(DT)
+library(rhandsontable)
 
 approved_books <- c("r4ds","advanced-r","feat","ggplot2","r-packages")
 
@@ -12,6 +14,21 @@ time_slots <- time_slots %>% mutate(
     time_slot = if_else(time_slot == 12, paste(12,"PM"),
                         if_else(time_slot > 12, paste(time_slot - 12, "PM"),
                                 if_else(time_slot == 0, paste(12,"AM"), paste(time_slot, "AM")))))
+
+sl  <-  data.frame(sno = seq_len(nrow(time_slots)))
+
+cal <- matrix(F, nrow = 24, ncol = 7, dimnames = list(time_slots$time_slot, days))  %>% 
+    data.frame()
+
+cbox_names = rep(paste0("cbox-",seq_len(nrow(time_slots))))
+
+x <- purrr::map(.x = sl$s, .y = days, .f = ~ paste0("cbox-", .x,"-", .y)) %>%
+    data.frame() %>% 
+    t() %>%
+    data.frame() %>% 
+    setNames(days)
+
+row.names(x) <- time_slots$time_slot
 
 calendar_view <- do.call(cbind, apply(data.frame(time_slots), 2, function(x) data.frame(x,x,x,x,x,x,x))) %>%
     rename_with( ~ days, names(.))
@@ -34,7 +51,8 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
             
-           DT::dataTableOutput("mytable", width = "1%")
+           #DT::dataTableOutput("mytable"), #, width = "1%"),
+           rHandsontableOutput("dt")
            
         )
     )
@@ -45,22 +63,51 @@ server <- function(input, output) {
 
     # browser()
     # helper function for making checkbox
-    shinyInput <- function(FUN, len, id, ...) { 
-        inputs <- character(len) 
-        for (i in seq_len(len)) { 
-            inputs[i] <- as.character(FUN(paste0(id, i), label = NULL, ...)) 
-        } 
+    # shinyInput <- function(FUN, len, id, ...) { 
+    #     inputs <- character(len) 
+    #     for (i in seq_len(len)) { 
+    #         inputs[i] <- as.character(FUN(paste0(id, i), label = NULL, ...)) 
+    #     } 
+    #     inputs 
+    # } 
+    
+    shinyInput2 <- function() { 
+        
+        inputs <- purrr::map_dfr(.x = sl$sno ,
+                                .f = ~ checkboxGroupInput(paste0("cboxgrp-", .x), label = NULL) )
         inputs 
-    } 
+    }
     
     # datatable with checkbox
     output$mytable <- DT::renderDataTable( 
         expr = {
+            # browser()
             df <- data.frame(
                 #  my_df,
-                time_slots,
-                #Favorite1 = shinyInput(checkboxInput, nrow(time_slots), "cbox1"), 
-                Monday = shinyInput(checkboxInput, nrow(time_slots), "cbox2")
+                
+                # time_slots ,
+                # Favorite1 = shinyInput(checkboxInput, nrow(time_slots), "cbox1")#, 
+                # Monday = shinyInput(checkboxInput, nrow(time_slots), "cbox2")# ,
+                # purrr::pmap(paste0("cbox",i), nrow(time_slots), checkboxInput,  ~ shinyInput(.x,.y))
+                # pmap(~fcn(.x, .y))
+                
+                # purrr::pmap(.x = checkboxInput,
+                #             .y = nrow(time_slots),
+                #             .z = paste0("cbox",seq(1:7)),
+                #             .f = ~ shinyInput
+                # )
+                # shinyInput2(nrow(time_slots), days)
+               
+                Monday = shinyInput2()# ,
+               #  purrr::map_dfc(.x = cbox_names, .y = days,
+               #                 .f = ~ checkboxInput(inputId = paste0(.x,"-", .y), label = NULL))  %>%
+               #      
+               #      # data.frame() %>% 
+               #      # t() %>%
+               #      # data.frame() %>% 
+               #      # setNames(days)
+               # identity()
+                # bind_cols(time_slots, .)
             )
             # names(df)[1] <- " "
             df
@@ -82,34 +129,37 @@ server <- function(input, output) {
         )
     )
     
+    output$dt <- renderRHandsontable({
+        rhandsontable(cal, width = 550, height = 300)
+    })
     
     # helper function for reading checkbox
-    shinyValue <- function(id, len) { 
-        unlist(
-            x = lapply(
-                X = seq_len(len), 
-                FUN = function(i) { 
-                    value = input[[paste0(id, i)]] 
-                    if (is.null(value)) {
-                        NA
-                    } else {
-                        value
-                    }  
-                }
-            )
-        ) 
-    } 
+    # shinyValue <- function(id, len) { 
+    #     unlist(
+    #         x = lapply(
+    #             X = seq_len(len), 
+    #             FUN = function(i) { 
+    #                 value = input[[paste0(id, i)]] 
+    #                 if (is.null(value)) {
+    #                     NA
+    #                 } else {
+    #                     value
+    #                 }  
+    #             }
+    #         )
+    #     ) 
+    # } 
     
     
     
     # output read checkboxes
-    output$checked <- renderTable({
-        data.frame(
-            #Favorite1 = shinyValue("cbox1", nrow(time_slots)),
-            Monday = shinyValue("cbox2", nrow(time_slots))
-        )
-    }
-    )
+    # output$checked <- renderTable({
+    #     data.frame(
+    #         #Favorite1 = shinyValue("cbox1", nrow(time_slots)),
+    #         Monday = shinyValue("cbox2", nrow(time_slots))
+    #     )
+    # }
+    # )
     
     time_selection_df <-  calendar_view  # needs to be reactive & shd include the status
     
