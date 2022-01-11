@@ -1,15 +1,15 @@
 
-library(shiny)
-library(shinyWidgets)
 library(dplyr)
+library(shiny)
 library(DT)
 library(rhandsontable)
+library(shinyWidgets)
 
 approved_books <- c("r4ds","advanced-r","feat","ggplot2","r-packages")
 
 days <- c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
-time_slots <- data.frame(time_slot = seq(from = 0, to = 23, by =1))
 
+time_slots <- data.frame(time_slot = seq(from = 0, to = 23, by =1))
 time_slots <- time_slots %>% mutate(
     time_slot = if_else(time_slot == 12, paste(12,"PM"),
                         if_else(time_slot > 12, paste(time_slot - 12, "PM"),
@@ -43,16 +43,19 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             textInput(inputId = "username", label = "Name", value = ""),
-            selectInput(inputId = "bookname", label = "Select Book", choices = approved_books, selected = "None"),
-            selectInput(inputId = "timezone", label = "Select Your Time Zone", choices = OlsonNames(), selected = "None"),
+            selectInput(inputId = "bookname", label = "Select Book", choices = approved_books),
+            #selectInput(inputId = "timezone", label = "Select Your Time Zone", choices = OlsonNames()),
             actionButton(inputId = "submit", label = "Submit")
         ),
 
         # Show a plot of the generated distribution
-        mainPanel(
-            
+        mainPanel( 
            #DT::dataTableOutput("mytable"), #, width = "1%"),
-           rHandsontableOutput("dt")
+           rHandsontableOutput("dt"),
+           # <br>
+           
+           h4("Your Selections"),
+           tableOutput("selected")
            
         )
     )
@@ -60,119 +63,52 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
     # browser()
-    # helper function for making checkbox
-    # shinyInput <- function(FUN, len, id, ...) { 
-    #     inputs <- character(len) 
-    #     for (i in seq_len(len)) { 
-    #         inputs[i] <- as.character(FUN(paste0(id, i), label = NULL, ...)) 
-    #     } 
-    #     inputs 
-    # } 
     
-    shinyInput2 <- function() { 
-        
-        inputs <- purrr::map_dfr(.x = sl$sno ,
-                                .f = ~ checkboxGroupInput(paste0("cboxgrp-", .x), label = NULL) )
-        inputs 
-    }
+    time_selection_df <- reactiveValues(data = cal)
     
-    # datatable with checkbox
-    output$mytable <- DT::renderDataTable( 
-        expr = {
-            # browser()
-            df <- data.frame(
-                #  my_df,
-                
-                # time_slots ,
-                # Favorite1 = shinyInput(checkboxInput, nrow(time_slots), "cbox1")#, 
-                # Monday = shinyInput(checkboxInput, nrow(time_slots), "cbox2")# ,
-                # purrr::pmap(paste0("cbox",i), nrow(time_slots), checkboxInput,  ~ shinyInput(.x,.y))
-                # pmap(~fcn(.x, .y))
-                
-                # purrr::pmap(.x = checkboxInput,
-                #             .y = nrow(time_slots),
-                #             .z = paste0("cbox",seq(1:7)),
-                #             .f = ~ shinyInput
-                # )
-                # shinyInput2(nrow(time_slots), days)
-               
-                Monday = shinyInput2()# ,
-               #  purrr::map_dfc(.x = cbox_names, .y = days,
-               #                 .f = ~ checkboxInput(inputId = paste0(.x,"-", .y), label = NULL))  %>%
-               #      
-               #      # data.frame() %>% 
-               #      # t() %>%
-               #      # data.frame() %>% 
-               #      # setNames(days)
-               # identity()
-                # bind_cols(time_slots, .)
-            )
-            # names(df)[1] <- " "
-            df
-        }, 
-        rownames = FALSE,
-        server = FALSE, 
-        escape = FALSE, 
-        options = list(
-            ordering = FALSE,
-            searching = FALSE,
-            paging = FALSE,
-            info = FALSE,
-            preDrawCallback = JS("function() { 
-          Shiny.unbindAll(this.api().table().node()); }"
-            ), 
-            drawCallback = JS("function() { 
-          Shiny.bindAll(this.api().table().node()); } "
-            ) 
-        )
-    )
-    
+    # display the week calendar
     output$dt <- renderRHandsontable({
-        rhandsontable(cal, width = 550, height = 300)
+        rhandsontable(time_selection_df$data) #, width = 550, height = 300)
     })
     
-    # helper function for reading checkbox
-    # shinyValue <- function(id, len) { 
-    #     unlist(
-    #         x = lapply(
-    #             X = seq_len(len), 
-    #             FUN = function(i) { 
-    #                 value = input[[paste0(id, i)]] 
-    #                 if (is.null(value)) {
-    #                     NA
-    #                 } else {
-    #                     value
-    #                 }  
-    #             }
-    #         )
-    #     ) 
-    # } 
+    # time_selection_df <-  calendar_view  # needs to be reactive & shd include the status
     
+    observeEvent(
+        input$table$changes$changes, # observe if any changes to the cells of the rhandontable
+        {
+            
+            xi=input$table$changes$changes[[1]][[1]] # capture the row of the cell which changed
+            yi=input$table$changes$changes[[1]][[2]] # capture the column of the cell which changed
+            old = input$table$changes$changes[[1]][[3]] # fetches the old values of the cell
+            new = input$table$changes$changes[[1]][[4]] # fetches the new value of the cell
+            
+            datavalues$data <- hot_to_r(input$table) # convert the rhandontable to R data frame object so manupilation / calculations could be done
+        }
+        
+    )
     
-    
-    # output read checkboxes
-    # output$checked <- renderTable({
-    #     data.frame(
-    #         #Favorite1 = shinyValue("cbox1", nrow(time_slots)),
-    #         Monday = shinyValue("cbox2", nrow(time_slots))
-    #     )
-    # }
-    # )
-    
-    time_selection_df <-  calendar_view  # needs to be reactive & shd include the status
-    
-    observeEvent(input$submit,{(
+    observeEvent(input$submit,{
        user_df <-  data.frame(
             book_name            = input$bookname,
             name                 = input$name,
-            tz                   = input$timezone,
+            # tz                   = input$timezone,
             submission_timestamp = Sys.time()
         )
-    )}
-                 
-                 )
+       
+       user_df <- cbind(user_df, datavalues$data())
+       
+    }
+  )
+    
+    #output$selected <- renderTable( head(user_df()))
+       
+    # find a way to save and print the dataframes at diff levels. 
+    # print(head(user_df))
+    
+    # cbind( the user_df with time_selection_df ... 
+    # the version that has changed to get he latest selections)
+    
 }
 
 # Run the application
