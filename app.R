@@ -5,6 +5,7 @@ library(DT)
 library(gt)
 library(rhandsontable)
 library(shinyWidgets)
+library(googlesheets4)
 
 approved_books <- c("r4ds","advanced-r","feat","ggplot2","r-packages")
 
@@ -18,8 +19,16 @@ time_slots <- time_slots %>% mutate(
 
 sl  <-  data.frame(sno = seq_len(nrow(time_slots)))
 
-cal <- matrix(F, nrow = 24, ncol = 7, dimnames = list(time_slots$time_slot, days))  %>% 
-    data.frame()
+running_book_clubs <- matrix(F, nrow = 24, ncol = 7) 
+# creating dummy data to test the concept of removing unavailable times. To be replaced with actual data from Jon.
+running_book_clubs[1,] <- TRUE
+running_book_clubs[,1] <- TRUE
+
+cal <- (running_book_clubs - 
+            matrix(F, nrow = 24, ncol = 7, dimnames = list(time_slots$time_slot, days)))  %>% 
+    data.frame() %>% 
+    mutate(across(c(Monday:Sunday), na_if, TRUE)) %>% 
+    mutate_at(vars(Monday:Sunday),  as.logical)
 
 cbox_names = rep(paste0("cbox-",seq_len(nrow(time_slots))))
 
@@ -34,6 +43,16 @@ row.names(x) <- time_slots$time_slot
 calendar_view <- do.call(cbind, apply(data.frame(time_slots), 2, function(x) data.frame(x,x,x,x,x,x,x))) %>%
     rename_with( ~ days, names(.))
 
+# Google login ( for the maintainer, most likely 1 time login setup)
+gs4_auth(
+    email = gargle::gargle_oauth_email(),
+    path = NULL,
+    scopes = "https://www.googleapis.com/auth/spreadsheets",
+    cache = gargle::gargle_oauth_cache(),
+    use_oob = gargle::gargle_oob_default(),
+    token = NULL
+)
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
@@ -43,10 +62,10 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
-            textInput(inputId = "username", label = "Name", value = ""),
-            selectInput(inputId = "bookname", label = "Select Book", choices = approved_books),
-            #selectInput(inputId = "timezone", label = "Select Your Time Zone", choices = OlsonNames()),
-            actionButton(inputId = "submit", label = "Submit")
+            shiny::textInput(inputId = "username", label = "Name", value = ""),
+            shiny::selectInput(inputId = "bookname", label = "Select Book", choices = approved_books, selected = "r4ds"),
+            selectInput(inputId = "timezone", label = "Select Your Time Zone", choices = OlsonNames()),
+            shiny::actionButton(inputId = "submit", label = "Submit")
         ),
 
         # Show a plot of the generated distribution
@@ -55,7 +74,10 @@ ui <- fluidPage(
            
            h4("Your Selections"),
            tableOutput("selected"),
-           textOutput("text")
+           
+           # h4("Your Submitted Info "),
+           # # tableOutput("text"),
+           # tableOutput("text2")
         )
     )
 )
@@ -63,7 +85,6 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     # browser()
-    
     # time_selection_df <- reactiveValues(data = cal)
     
     # display the week calendar
@@ -71,55 +92,26 @@ server <- function(input, output) {
         rhandsontable(cal) #, width = 550, height = 300)
     })
     
-    # time_selection_df <-  calendar_view  # needs to be reactive & shd include the status
-    
     observeEvent(
         input$time_table$changes$changes, # observe if any changes to the cells of the rhandontable
         {
-            # xi=input$table$changes$changes[[1]][[1]] # capture the row of the cell which changed
-            # yi=input$table$changes$changes[[1]][[2]] # capture the column of the cell which changed
-            # old = input$table$changes$changes[[1]][[3]] # fetches the old values of the cell
-            # new = input$table$changes$changes[[1]][[4]] # fetches the new value of the cell
-            
-            # datavalues$data <- hot_to_r(input$table) # convert the rhandontable to R data frame object so manupilation / calculations could be done
-            
         time_selections <- reactive({
-            df <- hot_to_r(input$time_table) %>% 
+            hot_to_r(input$time_table)
+        })
+        
+        time_selections_long <- reactive({
+            hot_to_r(input$time_table) %>% 
                 rownames_to_column(var = "time") %>% 
                 tidyr::pivot_longer(cols = Monday:Sunday, names_to = "day", values_to = "availability") %>% 
                 identity()
-            
-            df
-        })
-        
-        output$text <- renderText({
-            str(time_selections())
         })
             
         output$selected <- renderTable({
             
-            # hot_to_r(input$time_table) %>% 
-            #     gt() %>%
-                # tab_style(
-                #     style = list(
-                #         cell_fill(color = "green")  # cell_text(color = "green") 
-                #         ) ,  
-                #     locations = cells_body(
-                #         columns = Monday, 
-                #         rows = Monday == TRUE)  # conditional logic
-                #     )
-            # data_color(
-            #     columns = c(Monday:Sunday),
-            #     colors = scales::col_factor(
-            #         palette = c("green", "white"),
-            #         domain = c(TRUE, FALSE), # bins = 2
-            #         )
-            # )
-            
-            time_selections() %>% 
+            time_selections_long() %>% 
                 filter(availability == TRUE) %>%
                 group_by(day) %>% 
-                mutate(availability = stringr::str_flatten(time, collapse = ",")) %>% 
+                mutate(availability = stringr::str_flatten(time, collapse = ", ")) %>% 
                 # tidyr::unnest_wider(time) %>% 
                 select(-time) %>% # -availability,
                 distinct() %>% 
@@ -127,26 +119,44 @@ server <- function(input, output) {
         }) 
     })
     
+    # output$text <- renderText({
+    #     str(time_selections())
+    # })
     
-    observeEvent(input$submit,{
-       user_df <-  data.frame(
-            book_name            = input$bookname,
-            name                 = input$name,
-            # tz                   = input$timezone,
-            submission_timestamp = Sys.time()
-        )
+    # Save the user details
+    user_info <-  reactive({
+        data.frame(
+        book_name            = input$bookname,
+        name                 = input$username,
+        tz                   = input$timezone,
+        submission_timestamp = as.character(Sys.time())
+    )
+    })
+    
+    user_availability_df <- eventReactive(input$submit,{
        
-       user_df <- cbind(user_df, datavalues$data())
-     
+       cbind(
+           # Repeat user details for so many rows
+           # rep(user_info(), times = 24*7) , # %>% data.frame(),
+           user_info() , # %>% data.frame(),
+           # Save the availability details join it with
+           hot_to_r(input$time_table))
      })
     
-    #output$selected <- renderTable( head(user_df()))
-       
-    # find a way to save and print the dataframes at diff levels. 
-    # print(head(user_df))
-    
-    # cbind( the user_df with time_selection_df ... 
-    # the version that has changed to get he latest selections)
+    # output$text <- renderTable({
+    #     user_info()[,1:2]
+    #     # head(user_availability_df())
+    # })
+     
+    output$text2 <- renderTable({
+        user_availability_df()
+    })
+
+    observeEvent(input$submit,{
+        # Submit & Save the response on the googlesheets file
+        sheet_append("https://docs.google.com/spreadsheets/d/1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc/edit#gid=0",
+                     user_availability_df(), sheet = 1)
+    })
     
 }
 
