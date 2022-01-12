@@ -2,6 +2,7 @@
 library(dplyr)
 library(shiny)
 library(DT)
+library(gt)
 library(rhandsontable)
 library(shinyWidgets)
 
@@ -50,13 +51,11 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel( 
-           #DT::dataTableOutput("mytable"), #, width = "1%"),
-           rHandsontableOutput("dt"),
-           # <br>
+           rHandsontableOutput("time_table"),
            
            h4("Your Selections"),
-           tableOutput("selected")
-           
+           tableOutput("selected"),
+           textOutput("text")
         )
     )
 )
@@ -65,28 +64,69 @@ ui <- fluidPage(
 server <- function(input, output) {
     # browser()
     
-    time_selection_df <- reactiveValues(data = cal)
+    # time_selection_df <- reactiveValues(data = cal)
     
     # display the week calendar
-    output$dt <- renderRHandsontable({
-        rhandsontable(time_selection_df$data) #, width = 550, height = 300)
+    output$time_table <- renderRHandsontable({
+        rhandsontable(cal) #, width = 550, height = 300)
     })
     
     # time_selection_df <-  calendar_view  # needs to be reactive & shd include the status
     
     observeEvent(
-        input$table$changes$changes, # observe if any changes to the cells of the rhandontable
+        input$time_table$changes$changes, # observe if any changes to the cells of the rhandontable
         {
+            # xi=input$table$changes$changes[[1]][[1]] # capture the row of the cell which changed
+            # yi=input$table$changes$changes[[1]][[2]] # capture the column of the cell which changed
+            # old = input$table$changes$changes[[1]][[3]] # fetches the old values of the cell
+            # new = input$table$changes$changes[[1]][[4]] # fetches the new value of the cell
             
-            xi=input$table$changes$changes[[1]][[1]] # capture the row of the cell which changed
-            yi=input$table$changes$changes[[1]][[2]] # capture the column of the cell which changed
-            old = input$table$changes$changes[[1]][[3]] # fetches the old values of the cell
-            new = input$table$changes$changes[[1]][[4]] # fetches the new value of the cell
+            # datavalues$data <- hot_to_r(input$table) # convert the rhandontable to R data frame object so manupilation / calculations could be done
             
-            datavalues$data <- hot_to_r(input$table) # convert the rhandontable to R data frame object so manupilation / calculations could be done
-        }
+        time_selections <- reactive({
+            df <- hot_to_r(input$time_table) %>% 
+                rownames_to_column(var = "time") %>% 
+                tidyr::pivot_longer(cols = Monday:Sunday, names_to = "day", values_to = "availability") %>% 
+                identity()
+            
+            df
+        })
         
-    )
+        output$text <- renderText({
+            str(time_selections())
+        })
+            
+        output$selected <- renderTable({
+            
+            # hot_to_r(input$time_table) %>% 
+            #     gt() %>%
+                # tab_style(
+                #     style = list(
+                #         cell_fill(color = "green")  # cell_text(color = "green") 
+                #         ) ,  
+                #     locations = cells_body(
+                #         columns = Monday, 
+                #         rows = Monday == TRUE)  # conditional logic
+                #     )
+            # data_color(
+            #     columns = c(Monday:Sunday),
+            #     colors = scales::col_factor(
+            #         palette = c("green", "white"),
+            #         domain = c(TRUE, FALSE), # bins = 2
+            #         )
+            # )
+            
+            time_selections() %>% 
+                filter(availability == TRUE) %>%
+                group_by(day) %>% 
+                mutate(availability = stringr::str_flatten(time, collapse = ",")) %>% 
+                # tidyr::unnest_wider(time) %>% 
+                select(-time) %>% # -availability,
+                distinct() %>% 
+                identity()
+        }) 
+    })
+    
     
     observeEvent(input$submit,{
        user_df <-  data.frame(
@@ -97,9 +137,8 @@ server <- function(input, output) {
         )
        
        user_df <- cbind(user_df, datavalues$data())
-       
-    }
-  )
+     
+     })
     
     #output$selected <- renderTable( head(user_df()))
        
