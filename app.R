@@ -1,4 +1,4 @@
-
+############## R4DS Book Club Planner ##############
 library(dplyr)
 library(shiny)
 library(DT)
@@ -24,24 +24,11 @@ running_book_clubs <- matrix(F, nrow = 24, ncol = 7)
 running_book_clubs[1,] <- TRUE
 running_book_clubs[,1] <- TRUE
 
-cal <- (running_book_clubs - 
+week_calendar <- (running_book_clubs - 
             matrix(F, nrow = 24, ncol = 7, dimnames = list(time_slots$time_slot, days)))  %>% 
     data.frame() %>% 
     mutate(across(c(Monday:Sunday), na_if, TRUE)) %>% 
     mutate_at(vars(Monday:Sunday),  as.logical)
-
-cbox_names = rep(paste0("cbox-",seq_len(nrow(time_slots))))
-
-x <- purrr::map(.x = sl$s, .y = days, .f = ~ paste0("cbox-", .x,"-", .y)) %>%
-    data.frame() %>% 
-    t() %>%
-    data.frame() %>% 
-    setNames(days)
-
-row.names(x) <- time_slots$time_slot
-
-calendar_view <- do.call(cbind, apply(data.frame(time_slots), 2, function(x) data.frame(x,x,x,x,x,x,x))) %>%
-    rename_with( ~ days, names(.))
 
 # Google login ( for the maintainer, most likely 1 time login setup)
 gs4_auth(
@@ -53,43 +40,38 @@ gs4_auth(
     token = NULL
 )
 
-# Define UI for application that draws a histogram
+# Define UI 
 ui <- fluidPage(
-
+    
     # Application title
     titlePanel("R4DS Book Club Planner"),
-
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            shiny::textInput(inputId = "username", label = "Name", value = ""),
-            shiny::selectInput(inputId = "bookname", label = "Select Book", choices = approved_books, selected = "r4ds"),
-            selectInput(inputId = "timezone", label = "Select Your Time Zone", choices = OlsonNames()),
-            shiny::actionButton(inputId = "submit", label = "Submit")
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel( 
-           rHandsontableOutput("time_table"),
-           
-           h4("Your Selections"),
-           tableOutput("selected"),
-           
-           # h4("Your Submitted Info "),
-           # # tableOutput("text"),
-           # tableOutput("text2")
-        )
-    )
+    
+    fluidRow(column(width = 3, 
+                    shiny::textInput(inputId = "username", label = "Name", value = "")
+                    ),
+             column(width = 3, #offset = 1, 
+                    shiny::selectInput(inputId = "bookname", label = "Select Book", choices = approved_books)
+                    ),
+             column(width = 3, #offset = 1, 
+                    shiny::selectInput(inputId = "timezone", label = "Select Your Time Zone", choices = OlsonNames())
+                    ),
+             column(width = 2, offset = 1, p(strong("Finish by submitting")),
+                    shiny::actionButton(inputId = "submit", label = "Submit")
+                    ),
+    hr(),
+    fluidRow(column(width = 5, offset = 1, h4("Select your availability"), rHandsontableOutput("time_table")),
+             column(width = 6, h4("Your availability selections"), tableOutput("selected")))
+)
 )
 
-# Define server logic required to draw a histogram
+# Define server logic 
 server <- function(input, output) {
     # browser()
     # time_selection_df <- reactiveValues(data = cal)
     
     # display the week calendar
     output$time_table <- renderRHandsontable({
-        rhandsontable(cal) #, width = 550, height = 300)
+        rhandsontable(week_calendar) #, width = 550, height = 300)
     })
     
     observeEvent(
@@ -136,10 +118,8 @@ server <- function(input, output) {
     user_availability_df <- eventReactive(input$submit,{
        
        cbind(
-           # Repeat user details for so many rows
-           # rep(user_info(), times = 24*7) , # %>% data.frame(),
-           user_info() , # %>% data.frame(),
-           # Save the availability details join it with
+           user_info(),
+           # Combine the user info(recycled for all availability rows) with availability details
            hot_to_r(input$time_table))
      })
     
@@ -153,7 +133,7 @@ server <- function(input, output) {
     })
 
     observeEvent(input$submit,{
-        # Submit & Save the response on the googlesheets file
+        # On click of Submit button, save the response on the googlesheets file
         sheet_append("https://docs.google.com/spreadsheets/d/1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc/edit#gid=0",
                      user_availability_df(), sheet = 1)
     })
@@ -162,4 +142,3 @@ server <- function(input, output) {
 
 # Run the application
 shinyApp(ui = ui, server = server)
-
