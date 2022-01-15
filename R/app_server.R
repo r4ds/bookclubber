@@ -5,6 +5,18 @@
 #' @import shiny
 #' @keywords internal
 .app_server <- function(input, output, session) {
+  # Update the timezone dropdown to use the detected zone by default. This is
+  # inspired by code from https://github.com/rpodcast/shinycal.
+  shiny::observe({
+    tz <- input$clientZone
+    # If it's blank or malformed, don't select anything by default.
+    if (is.null(tz) || !tz %in% OlsonNames()) tz <- character(0)
+    shiny::updateSelectInput(
+      inputId = "timezone",
+      selected = tz
+    )
+  })
+
   # display the week calendar
   output$time_table <- rhandsontable::renderRHandsontable({
     rhandsontable::rhandsontable(week_calendar) #, width = 550, height = 300)
