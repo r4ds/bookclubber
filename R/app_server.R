@@ -3,8 +3,8 @@
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
-#' @noRd
-app_server <- function(input, output, session) {
+#' @keywords internal
+.app_server <- function(input, output, session) {
   # display the week calendar
   output$time_table <- rhandsontable::renderRHandsontable({
     rhandsontable::rhandsontable(week_calendar) #, width = 550, height = 300)
@@ -92,18 +92,26 @@ app_server <- function(input, output, session) {
 
 #' Stuff to run at startup
 #'
-#' I'll have to check how these are used. If they're exclusively used in UI we
-#' can probably define them there.
+#' I'll have to see what should universally run at startup (eg, definitions of
+#' the possible slots) vs what should be checked during use (eg, we should load
+#' the "used" slots from time to time, although we can probably do that in
+#' global with a reactivePoll, so... yeah, this will get more stuff).
 #'
-#' @noRd
-app_global <- function() {
-  approved_books <- c("r4ds","advanced-r","feat","ggplot2","r-packages")
+#' After reading up a bit on the golem github, it looks like this isn't QUITE
+#' what I want. We'll explore this further as we go, but likely we just want
+#' most of this in server, with maybe a little bit in the golem_opts in run_app.
+#'
+#' @keywords internal
+.app_global <- function() {
+  # Ick. I currently have to use <<- to get this to work, since this is only
+  # kinda sorta global, evidently. This needs to be sorted out.
+  approved_books <<- c("r4ds","advanced-r","feat","ggplot2","r-packages")
 
-  days <- c(
+  days <<- c(
     "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
   )
 
-  time_slots <- data.frame(
+  time_slots <<- data.frame(
     time_slot = c(
       paste(
         c(12, 1:11),
@@ -116,15 +124,15 @@ app_global <- function() {
     )
   )
 
-  sl  <-  data.frame(sno = seq_len(nrow(time_slots)))
+  sl <<- data.frame(sno = seq_len(nrow(time_slots)))
 
-  running_book_clubs <- matrix(F, nrow = 24, ncol = 7)
+  running_book_clubs <<- matrix(F, nrow = 24, ncol = 7)
   # creating dummy data to test the concept of removing unavailable times. To be
   # replaced with actual data from Jon.
-  running_book_clubs[1,] <- TRUE
-  running_book_clubs[,1] <- TRUE
+  running_book_clubs[1,] <<- TRUE
+  running_book_clubs[,1] <<- TRUE
 
-  week_calendar <- (
+  week_calendar <<- (
     running_book_clubs -
       matrix(
         F,

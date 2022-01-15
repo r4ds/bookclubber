@@ -13,9 +13,9 @@ run_app <- function(options = list(),
                     ...) {
   with_golem_options(
     app = shinyApp(
-      ui = app_ui,
-      server = app_server,
-      onStart = app_global,
+      ui = .app_ui,
+      server = .app_server,
+      onStart = .app_global,
       options = options,
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
