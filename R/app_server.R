@@ -159,15 +159,12 @@
     ) %>%
     dplyr::mutate_at(dplyr::vars(Monday:Sunday), as.logical)
 
-  # Google login ( for the maintainer, most likely 1 time login setup). TBD BEFORE
-  # DEPLOYMENT: How will this work with shinyapps? I'm sure it's solved we just
-  # need to find that info.
+  # Google login. Note that you must have the json named here in your inst
+  # folder. If you are working on this app and believe you should be trusted
+  # with this access, please contact the maintainer.
   googlesheets4::gs4_auth(
-    email = gargle::gargle_oauth_email(),
-    path = NULL,
-    scopes = "https://www.googleapis.com/auth/spreadsheets",
-    cache = gargle::gargle_oauth_cache(),
-    use_oob = gargle::gargle_oob_default(),
-    token = NULL
+    path = system.file(
+      "bookclubs4ds-service-account.json", package = "bookclubber"
+    )
   )
 }

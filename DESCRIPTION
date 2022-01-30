@@ -1,6 +1,6 @@
 Package: bookclubber
 Title: Schedule R4DS Book Clubs
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person(given = "Jon",
            family = "Harmon",
@@ -17,7 +17,10 @@ License: MIT + file LICENSE
 Imports: 
     config (>= 0.3.1),
     dplyr,
+    gargle,
     golem (>= 0.3.1),
+    googlesheets4,
+    pkgload,
     rhandsontable,
     shiny (>= 1.7.1),
     stringr,
