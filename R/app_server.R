@@ -61,9 +61,9 @@
   # Save the user details
   user_info <-  reactive({
     data.frame(
-      book_name            = input$bookname,
-      name                 = input$username,
-      tz                   = input$timezone,
+      user_name = input$username,
+      book_name = input$bookname,
+      timezone = input$timezone,
       submission_timestamp = as.character(Sys.time())
     )
   })
@@ -76,7 +76,22 @@
         # Combine the user info (recycled for all availability rows) with
         # availability details
         rhandsontable::hot_to_r(input$time_table)
-      )
+      ) %>%
+        dplyr::mutate(hour = 0:23) %>%
+        tidyr::pivot_longer(
+          cols = .data$Monday:.data$Sunday,
+          names_to = "day",
+          values_to = "available"
+        ) %>%
+        dplyr::select(
+          .data$user_name,
+          .data$book_name,
+          .data$timezone,
+          .data$submission_timestamp,
+          .data$day,
+          .data$hour,
+          .data$available
+        )
     }
   )
 
@@ -115,50 +130,6 @@
 #'
 #' @keywords internal
 .app_global <- function() {
-  # Ick. I currently have to use <<- to get this to work, since this is only
-  # kinda sorta global, evidently. This needs to be sorted out.
-  approved_books <<- c("r4ds","advanced-r","feat","ggplot2","r-packages")
-
-  days <<- c(
-    "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
-  )
-
-  time_slots <<- data.frame(
-    time_slot = c(
-      paste(
-        c(12, 1:11),
-        "AM"
-      ),
-      paste(
-        c(12, 1:11),
-        "PM"
-      )
-    )
-  )
-
-  sl <<- data.frame(sno = seq_len(nrow(time_slots)))
-
-  running_book_clubs <<- matrix(F, nrow = 24, ncol = 7)
-  # creating dummy data to test the concept of removing unavailable times. To be
-  # replaced with actual data from Jon.
-  running_book_clubs[1,] <<- TRUE
-  running_book_clubs[,1] <<- TRUE
-
-  week_calendar <<- (
-    running_book_clubs -
-      matrix(
-        F,
-        nrow = 24,
-        ncol = 7,
-        dimnames = list(time_slots$time_slot, days)
-      )
-  )  %>%
-    data.frame() %>%
-    dplyr::mutate(
-      dplyr::across(c(Monday:Sunday), dplyr::na_if, TRUE)
-    ) %>%
-    dplyr::mutate_at(dplyr::vars(Monday:Sunday), as.logical)
-
   # Google login. Note that you must have the json named here in your inst
   # folder. If you are working on this app and believe you should be trusted
   # with this access, please contact the maintainer.
