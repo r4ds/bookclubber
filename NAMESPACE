@@ -2,7 +2,9 @@
 
 export("%>%")
 export(.data)
+export(.env)
+export(choose_time)
 export(run_app)
-import(shiny)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)
+importFrom(rlang,.env)

@@ -3,6 +3,7 @@
 \name{tidyeval}
 \alias{tidyeval}
 \alias{.data}
+\alias{.env}
 \title{Tidy eval helpers}
 \description{
 This page lists the tidy eval tools reexported in this package from

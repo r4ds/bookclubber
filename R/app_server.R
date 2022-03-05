@@ -2,7 +2,6 @@
 #'
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
-#' @import shiny
 #' @keywords internal
 .app_server <- function(input, output, session) {
   # Update the timezone dropdown to use the detected zone by default. This is
@@ -22,29 +21,25 @@
     rhandsontable::rhandsontable(week_calendar) #, width = 550, height = 300)
   })
 
-  observeEvent(
+  shiny::observeEvent(
     # observe if any changes to the cells of the rhandontable
     input$time_table$changes$changes,
     {
-      time_selections <- reactive({
-        rhandsontable::hot_to_r(input$time_table)
-      })
-
-      time_selections_long <- reactive({
+      time_selections_long <- shiny::reactive({
         rhandsontable::hot_to_r(input$time_table) %>%
           tibble::rownames_to_column(var = "time") %>%
           tidyr::pivot_longer(
-            cols = Monday:Sunday,
+            cols = .data$Monday:.data$Sunday,
             names_to = "day",
             values_to = "availability"
           ) %>%
           identity()
       })
 
-      output$selected <- renderTable({
+      output$selected <- shiny::renderTable({
         time_selections_long() %>%
-          dplyr::filter(availability == TRUE) %>%
-          dplyr::group_by(day) %>%
+          dplyr::filter(.data$availability == TRUE) %>%
+          dplyr::group_by(.data$day) %>%
           dplyr::mutate(
             availability = stringr::str_flatten(time, collapse = ", ")
           ) %>%
@@ -54,12 +49,8 @@
       })
     })
 
-  # output$text <- renderText({
-  #     str(time_selections())
-  # })
-
   # Save the user details
-  user_info <-  reactive({
+  user_info <- shiny::reactive({
     data.frame(
       user_name = input$username,
       book_name = input$bookname,
@@ -68,7 +59,7 @@
     )
   })
 
-  user_availability_df <- eventReactive(
+  user_availability_df <- shiny::eventReactive(
     input$submit,
     {
       cbind(
@@ -95,16 +86,11 @@
     }
   )
 
-  # output$text <- renderTable({
-  #     user_info()[,1:2]
-  #     # head(user_availability_df())
-  # })
-
-  output$text2 <- renderTable({
+  output$text2 <- shiny::renderTable({
     user_availability_df()
   })
 
-  observeEvent(
+  shiny::observeEvent(
     input$submit,
     {
       # On click of Submit button, save the response on the googlesheets file

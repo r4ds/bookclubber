@@ -23,7 +23,7 @@
 #' @md
 #' @name tidyeval
 #' @keywords internal
-#' @importFrom rlang .data
-#' @aliases .data
-#' @export .data
+#' @importFrom rlang .data .env
+#' @aliases .data .env
+#' @export .data .env
 NULL
