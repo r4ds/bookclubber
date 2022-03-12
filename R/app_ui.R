@@ -1,28 +1,26 @@
 #' The application User-Interface
 #'
-#' @param request Internal parameter for `{shiny}`.
-#'     DO NOT REMOVE.
-#' @import shiny
+#' @param request Internal parameter for `{shiny}`. DO NOT REMOVE.
 #' @keywords internal
 .app_ui <- function(request) {
-  tagList(
+  shiny::tagList(
     # This function loads things like javascript scripts or CSS.
     .golem_add_external_resources(),
     # Your application UI logic
-    fluidPage(
+    shiny::fluidPage(
       # Application title
-      titlePanel("R4DS Book Club Planner"),
+      shiny::titlePanel("R4DS Book Club Planner"),
 
-      fluidRow(
+      shiny::fluidRow(
         # Add HTML to the page to store the timezone.
-        HTML(
+        shiny::HTML(
           '<input type="text" id="clientZone" name="Client zone" style="display: none;"> '
         ),
-        column(
+        shiny::column(
           width = 3,
           shiny::textInput(inputId = "username", label = "Name", value = "")
         ),
-        column(
+        shiny::column(
           width = 3, #offset = 1,
           shiny::selectInput(
             inputId = "bookname",
@@ -30,7 +28,7 @@
             choices = approved_books
           )
         ),
-        column(
+        shiny::column(
           width = 3, #offset = 1,
           shiny::selectInput(
             inputId = "timezone",
@@ -38,24 +36,24 @@
             choices = OlsonNames()
           )
         ),
-        column(
+        shiny::column(
           width = 2,
           offset = 1,
-          p(strong("Finish by submitting")),
+          shiny::p(shiny::strong("Finish by submitting")),
           shiny::actionButton(inputId = "submit", label = "Submit")
         ),
-        hr(),
-        fluidRow(
-          column(
+        shiny::hr(),
+        shiny::fluidRow(
+          shiny::column(
             width = 5,
             offset = 1,
-            h4("Select your availability"),
+            shiny::h4("Select your availability"),
             rhandsontable::rHandsontableOutput("time_table")
           ),
-          column(
+          shiny::column(
             width = 6,
-            h4("Your availability selections"),
-            tableOutput("selected")
+            shiny::h4("Your availability selections"),
+            shiny::tableOutput("selected")
           )
         )
       )
