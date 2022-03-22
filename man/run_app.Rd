@@ -4,27 +4,14 @@
 \alias{run_app}
 \title{Run the Shiny Application}
 \usage{
-run_app(options = list(), enableBookmarking = NULL, uiPattern = "/", ...)
+run_app(local = FALSE, ...)
 }
 \arguments{
-\item{options}{Named options that should be passed to the \code{runApp} call
-(these can be any of the following: "port", "launch.browser", "host", "quiet",
-"display.mode" and "test.mode"). You can also specify \code{width} and
-\code{height} parameters which provide a hint to the embedding environment
-about the ideal height/width for the app.}
+\item{local}{Logical indicating whether to run the app locally or on a
+server. Useful for debugging.}
 
-\item{enableBookmarking}{Can be one of \code{"url"}, \code{"server"}, or
-\code{"disable"}. The default value, \code{NULL}, will respect the setting from
-any previous calls to  \code{\link[shiny:enableBookmarking]{enableBookmarking()}}. See \code{\link[shiny:enableBookmarking]{enableBookmarking()}}
-for more information on bookmarking your app.}
-
-\item{uiPattern}{A regular expression that will be applied to each \code{GET}
-request to determine whether the \code{ui} should be used to handle the
-request. Note that the entire request path must match the regular
-expression in order for the match to be considered successful.}
-
-\item{...}{arguments to pass to golem_opts.
-See `?golem::get_golem_options` for more details.}
+\item{...}{arguments to pass to golem_opts. See
+\code{\link[golem]{get_golem_options}} for more details.}
 }
 \description{
 Run the Shiny Application
