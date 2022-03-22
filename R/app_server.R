@@ -115,10 +115,10 @@
     query <- parseQueryString(session$clientData$url_search)
 
     #Ignore if the URL query is null
-    if (!is.null(query[['book_name']])) {
+    if (!is.null(query[['bookname']])) {
 
       #Update the select input
-      updateSelectInput(session, "book_name", selected  = query[['book_name']], choices = approved_books)
+      updateSelectInput(session, "bookname", selected  = query[['bookname']], choices = approved_books)
 
     }
 
