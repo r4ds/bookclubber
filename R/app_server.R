@@ -22,7 +22,7 @@
   })
 
   shiny::observeEvent(
-    # observe if any changes to the cells of the rhandontable
+    # observe if any changes to the cells of the rhandsontable
     input$time_table$changes$changes,
     {
       time_selections_long <- shiny::reactive({
@@ -83,8 +83,8 @@
           .data$hour,
           .data$available
         )
-    }
-  )
+
+      })
 
   output$text2 <- shiny::renderTable({
     user_availability_df()
@@ -99,8 +99,30 @@
         user_availability_df(),
         sheet = 1
       )
+
+      # This sends the confirmation message on clicking Submit button.
+      showModal(modalDialog(
+        title = "Thank you, your availability has been received",
+        easyClose = TRUE,
+        footer = tagList(modalButton("Ok"))
+      ))
     }
   )
+
+  observe({
+
+    #Get URL query
+    query <- parseQueryString(session$clientData$url_search)
+
+    #Ignore if the URL query is null
+    if (!is.null(query[['book_name']])) {
+
+      #Update the select input
+      updateSelectInput(session, "book_name", selected  = query[['book_name']], choices = approved_books)
+
+    }
+
+  })
 }
 
 #' Stuff to run at startup
