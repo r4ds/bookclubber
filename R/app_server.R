@@ -22,7 +22,7 @@
   })
 
   shiny::observeEvent(
-    # observe if any changes to the cells of the rhandontable
+    # observe if any changes to the cells of the rhandsontable
     input$time_table$changes$changes,
     {
       time_selections_long <- shiny::reactive({
@@ -83,8 +83,8 @@
           .data$hour,
           .data$available
         )
-    }
-  )
+
+      })
 
   output$text2 <- shiny::renderTable({
     user_availability_df()
@@ -93,14 +93,43 @@
   shiny::observeEvent(
     input$submit,
     {
+      # Show a modal right away to prevent further submits.
+      shiny::showModal(
+        shiny::modalDialog(
+          title = "Thank you, your availability has been submitted.",
+          easyClose = TRUE,
+          footer = shiny::tagList(shiny::modalButton("Ok"))
+        )
+      )
       # On click of Submit button, save the response on the googlesheets file
       googlesheets4::sheet_append(
         "https://docs.google.com/spreadsheets/d/1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc/edit#gid=0",
         user_availability_df(),
         sheet = 1
       )
+      # Technically if it doesn't save we don't tell them. Issue #16
     }
   )
+
+  shiny::observe({
+
+    #Get URL query
+    query <- shiny::parseQueryString(session$clientData$url_search)
+
+    #Ignore if the URL query is null
+    if (!is.null(query[["bookname"]]) && query[["bookname"]] %in% approved_books) {
+
+      #Update the select input
+      shiny::updateSelectInput(
+        session,
+        "bookname",
+        selected  = query[["bookname"]],
+        choices = approved_books
+      )
+
+    }
+
+  })
 }
 
 #' Stuff to run at startup

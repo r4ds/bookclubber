@@ -1,5 +1,10 @@
 ## We have a couple simple parameters to set up, let's do that here.
-approved_books <- c("Practical Python Programming", "R Packages")
+approved_books <- c(
+  "Practical Python Programming",
+  "R for Data Science",
+  "R Packages",
+  "Mastering Shiny"
+)
 
 days <- c(
   "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday", "Sunday"
