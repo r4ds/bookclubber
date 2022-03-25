@@ -18,7 +18,7 @@
         ),
         shiny::column(
           width = 3,
-          shiny::textInput(inputId = "username", label = "Name", value = "")
+          shiny::htmlOutput(outputId = "username")
         ),
         shiny::column(
           width = 3, #offset = 1,

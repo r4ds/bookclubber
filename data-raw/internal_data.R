@@ -66,9 +66,14 @@ week_calendar <- data.frame(
   )
 )
 
+.team_id <- "T6UC1DKJQ"
+.site_url <- "https://r4dscommunity.shinyapps.io/bookclubber/"
+
 usethis::use_data(
   approved_books,
   week_calendar,
+  .team_id,
+  .site_url,
   internal = TRUE,
   overwrite = TRUE
 )
@@ -77,5 +82,7 @@ rm(
   time_slots,
   week_calendar,
   approved_books,
-  days
+  days,
+  .team_id,
+  .site_url
 )

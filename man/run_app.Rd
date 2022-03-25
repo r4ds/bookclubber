@@ -4,7 +4,7 @@
 \alias{run_app}
 \title{Run the Shiny Application}
 \usage{
-run_app(local = FALSE, ...)
+run_app(local = interactive(), ...)
 }
 \arguments{
 \item{local}{Logical indicating whether to run the app locally or on a
