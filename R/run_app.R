@@ -6,17 +6,23 @@
 #'   \code{\link[golem]{get_golem_options}} for more details.
 #'
 #' @export
-run_app <- function(local = FALSE, ...) {
+run_app <- function(local = interactive(), ...) {
   if (local) {
+    site_url <- "http://127.0.0.1:4242/"
     options <- list(
       port = 4242L,
       launch.browser = TRUE
     )
   } else {
+    site_url <- .site_url
     options <- list()
   }
   app <- shiny::shinyApp(
-    ui = .app_ui,
+    ui = shinyslack::slack_shiny_ui(
+      ui = .app_ui,
+      team_id = .team_id,
+      site_url = site_url
+    ),
     server = .app_server,
     onStart = .app_global,
     options = options,

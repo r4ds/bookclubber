@@ -16,6 +16,33 @@
     )
   })
 
+  # Display their name so they can log out if it's the wrong person. This should
+  # eventually move into shinyslack as an exported module.
+  slack_user_info <- shiny::reactive({
+    slack_info <- slackcalls::post_slack(
+      slack_method = "auth.test"
+    )
+
+    # Log the current user on shinyapps.
+    message(
+      "***** Login by: ",
+      slack_info$user
+    )
+
+    list(
+      user_name = slack_info$user,
+      user_id = slack_info$user_id
+    )
+  })
+
+  output$username <- shiny::renderText(
+    paste(
+      shiny::strong("Logged in as"),
+      shiny::br(),
+      slack_user_info()$user_name
+    )
+  )
+
   # display the week calendar
   output$time_table <- rhandsontable::renderRHandsontable({
     rhandsontable::rhandsontable(week_calendar) #, width = 550, height = 300)
@@ -52,7 +79,8 @@
   # Save the user details
   user_info <- shiny::reactive({
     data.frame(
-      user_name = input$username,
+      user_name = slack_user_info()$user_name,
+      user_id = slack_user_info()$user_id,
       book_name = input$bookname,
       timezone = input$timezone,
       submission_timestamp = as.character(Sys.time())
@@ -76,6 +104,7 @@
         ) %>%
         dplyr::select(
           .data$user_name,
+          .data$user_id,
           .data$book_name,
           .data$timezone,
           .data$submission_timestamp,
