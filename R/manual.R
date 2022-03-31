@@ -100,8 +100,8 @@ choose_time <- function(book_name) {
       # I could save this as a variable for the package, but I want to have it
       # here explicitly to remember that Sunday is the start of the week.
       levels = c(
-        "Sunday", "Monday","Tuesday","Wednesday",
-        "Thursday","Friday","Saturday"
+        "Sunday", "Monday", "Tuesday", "Wednesday",
+        "Thursday", "Friday", "Saturday"
       )
     )
   )

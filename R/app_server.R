@@ -30,7 +30,7 @@
 
   # display the week calendar
   output$time_table <- rhandsontable::renderRHandsontable({
-    rhandsontable::rhandsontable(week_calendar) #, width = 550, height = 300)
+    rhandsontable::rhandsontable(week_calendar)
   })
 
   shiny::observeEvent(
@@ -59,7 +59,8 @@
           dplyr::distinct() %>%
           identity()
       })
-    })
+    }
+  )
 
   # Save the user details
   user_info <- shiny::reactive({
@@ -97,8 +98,8 @@
           .data$hour,
           .data$available
         )
-
-      })
+    }
+  )
 
   output$text2 <- shiny::renderTable({
     user_availability_df()
@@ -127,22 +128,20 @@
 
   shiny::observe({
 
-    #Get URL query
+    # Get URL query
     query <- shiny::parseQueryString(session$clientData$url_search)
 
-    #Ignore if the URL query is null
+    # Ignore if the URL query is null
     if (!is.null(query[["bookname"]]) && query[["bookname"]] %in% approved_books) {
 
-      #Update the select input
+      # Update the select input
       shiny::updateSelectInput(
         session,
         "bookname",
         selected  = query[["bookname"]],
         choices = approved_books
       )
-
     }
-
   })
 }
 
@@ -164,7 +163,8 @@
   # with this access, please contact the maintainer.
   googlesheets4::gs4_auth(
     path = system.file(
-      "bookclubs4ds-service-account.json", package = "bookclubber"
+      "bookclubs4ds-service-account.json",
+      package = "bookclubber"
     )
   )
 }

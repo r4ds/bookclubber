@@ -10,7 +10,6 @@
     shiny::fluidPage(
       # Application title
       shiny::titlePanel("R4DS Book Club Planner"),
-
       shiny::fluidRow(
         # Add HTML to the page to store the timezone.
         shiny::HTML(
@@ -21,7 +20,7 @@
           shiny::htmlOutput(outputId = "username")
         ),
         shiny::column(
-          width = 3, #offset = 1,
+          width = 3,
           shiny::selectInput(
             inputId = "bookname",
             label = "Select Book",
@@ -29,7 +28,7 @@
           )
         ),
         shiny::column(
-          width = 3, #offset = 1,
+          width = 3,
           shiny::selectInput(
             inputId = "timezone",
             label = "Select Your Time Zone",
@@ -67,18 +66,15 @@
 #' resources inside the Shiny application.
 #'
 #' @keywords internal
-.golem_add_external_resources <- function(){
-
+.golem_add_external_resources <- function() {
   golem::add_resource_path(
-    'www', .app_sys('app/www')
+    "www", .app_sys("app/www")
   )
 
   shiny::tags$head(
-    # favicon(),
     golem::bundle_resources(
-      path = .app_sys('app/www'),
-      app_title = 'bookclubber'
+      path = .app_sys("app/www"),
+      app_title = "bookclubber"
     )
   )
 }
-
