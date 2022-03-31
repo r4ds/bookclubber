@@ -30,7 +30,7 @@
 
   # display the week calendar
   output$time_table <- rhandsontable::renderRHandsontable({
-    rhandsontable::rhandsontable(week_calendar) #, width = 550, height = 300)
+    rhandsontable::rhandsontable(week_calendar)
   })
 
   shiny::observeEvent(
@@ -53,13 +53,14 @@
           dplyr::filter(.data$availability == TRUE) %>%
           dplyr::group_by(.data$day) %>%
           dplyr::mutate(
-            availability = stringr::str_flatten(time, collapse = ", ")
+            availability = stringr::str_flatten(.data$time, collapse = ", ")
           ) %>%
-          dplyr::select(-time) %>% # -availability,
+          dplyr::select(-.data$time) %>% # -availability,
           dplyr::distinct() %>%
           identity()
       })
-    })
+    }
+  )
 
   # Save the user details
   user_info <- shiny::reactive({
@@ -97,8 +98,8 @@
           .data$hour,
           .data$available
         )
-
-      })
+    }
+  )
 
   output$text2 <- shiny::renderTable({
     user_availability_df()
@@ -117,7 +118,7 @@
       )
       # On click of Submit button, save the response on the googlesheets file
       googlesheets4::sheet_append(
-        "https://docs.google.com/spreadsheets/d/1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc/edit#gid=0",
+        "1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc",
         user_availability_df(),
         sheet = 1
       )
@@ -126,23 +127,21 @@
   )
 
   shiny::observe({
-
-    #Get URL query
+    # Get URL query
     query <- shiny::parseQueryString(session$clientData$url_search)
 
-    #Ignore if the URL query is null
-    if (!is.null(query[["bookname"]]) && query[["bookname"]] %in% approved_books) {
-
-      #Update the select input
+    # Ignore if the URL query is null
+    if (
+      !is.null(query[["bookname"]]) && query[["bookname"]] %in% approved_books
+    ) {
+      # Update the select input
       shiny::updateSelectInput(
         session,
         "bookname",
         selected  = query[["bookname"]],
         choices = approved_books
       )
-
     }
-
   })
 }
 
@@ -164,7 +163,8 @@
   # with this access, please contact the maintainer.
   googlesheets4::gs4_auth(
     path = system.file(
-      "bookclubs4ds-service-account.json", package = "bookclubber"
+      "bookclubs4ds-service-account.json",
+      package = "bookclubber"
     )
   )
 }

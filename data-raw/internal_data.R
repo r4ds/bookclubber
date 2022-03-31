@@ -7,7 +7,7 @@ approved_books <- c(
 )
 
 days <- c(
-  "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday", "Sunday"
+  "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
 )
 
 time_slots <- data.frame(
