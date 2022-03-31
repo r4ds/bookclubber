@@ -53,9 +53,9 @@
           dplyr::filter(.data$availability == TRUE) %>%
           dplyr::group_by(.data$day) %>%
           dplyr::mutate(
-            availability = stringr::str_flatten(time, collapse = ", ")
+            availability = stringr::str_flatten(.data$time, collapse = ", ")
           ) %>%
-          dplyr::select(-time) %>% # -availability,
+          dplyr::select(-.data$time) %>% # -availability,
           dplyr::distinct() %>%
           identity()
       })
@@ -118,7 +118,7 @@
       )
       # On click of Submit button, save the response on the googlesheets file
       googlesheets4::sheet_append(
-        "https://docs.google.com/spreadsheets/d/1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc/edit#gid=0",
+        "1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc",
         user_availability_df(),
         sheet = 1
       )
@@ -127,13 +127,13 @@
   )
 
   shiny::observe({
-
     # Get URL query
     query <- shiny::parseQueryString(session$clientData$url_search)
 
     # Ignore if the URL query is null
-    if (!is.null(query[["bookname"]]) && query[["bookname"]] %in% approved_books) {
-
+    if (
+      !is.null(query[["bookname"]]) && query[["bookname"]] %in% approved_books
+    ) {
       # Update the select input
       shiny::updateSelectInput(
         session,

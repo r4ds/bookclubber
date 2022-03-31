@@ -15,7 +15,7 @@ choose_time <- function(book_name) {
   book_name <- rlang::arg_match(book_name, values = approved_books)
 
   df <- googlesheets4::read_sheet(
-    "https://docs.google.com/spreadsheets/d/1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc/edit#gid=0",
+    "1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc",
     sheet = 1
   ) %>%
     dplyr::filter(.data$book_name == .env$book_name) %>%

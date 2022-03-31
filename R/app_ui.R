@@ -12,8 +12,11 @@
       shiny::titlePanel("R4DS Book Club Planner"),
       shiny::fluidRow(
         # Add HTML to the page to store the timezone.
-        shiny::HTML(
-          '<input type="text" id="clientZone" name="Client zone" style="display: none;"> '
+        shiny::tags$input(
+          type = "text",
+          id = "clientZone",
+          name = "Client zone",
+          style = "display: none;"
         ),
         shiny::column(
           width = 3,
