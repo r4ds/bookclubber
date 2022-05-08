@@ -8,12 +8,5 @@ pkgload::load_all(
   attach_testthat = FALSE
 )
 
-if (file.exists(".secret")) {
-  shinyslack_key <- readLines(".secret", 1)
-  Sys.setenv(
-    shinyslack_key = shinyslack_key
-  )
-}
-
 options("golem.app.prod" = TRUE)
 bookclubber::run_app() # add parameters here (if any)

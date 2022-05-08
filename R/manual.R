@@ -7,10 +7,16 @@
 #'
 #' @param book_name The abbreviation for an approved book, such as rpkgs or
 #'   mshiny.
+#' @param facilitator_id The Slack ID of the facilitator for this group.
+#'   Available via the user's "full profile" in Slack.
+#' @param output_tz A timezone in which to show the result, by default
+#'   "America/Chicago" since that's what the R4DS calendar is in.
 #'
-#' @return The best time.
+#' @return The best times, as a tibble.
 #' @export
-choose_time <- function(book_name) {
+choose_time <- function(book_name,
+                        facilitator_id,
+                        output_tz = "America/Chicago") {
   # Verify that book_name is in our list.
   book_name <- rlang::arg_match(book_name, values = approved_books)
 
@@ -26,6 +32,7 @@ choose_time <- function(book_name) {
     ) %>%
     dplyr::distinct(
       .data$user_name,
+      .data$user_id,
       .data$day,
       .data$hour,
       .keep_all = TRUE
@@ -41,10 +48,40 @@ choose_time <- function(book_name) {
         timezone = .data$timezone
       )
     ) %>%
-    dplyr::ungroup() %>%
+    dplyr::ungroup()
+
+  facilitator_times <- df %>%
+    dplyr::filter(.data$user_id == facilitator_id)
+
+  facilitator_tz <- head(facilitator_times, 1)$timezone
+
+  best_times <- df %>%
+    dplyr::filter(
+      .data$datetime_utc %in% facilitator_times$datetime_utc
+    ) %>%
     dplyr::count(.data$datetime_utc, sort = TRUE)
 
-  df
+  return(
+    best_times %>%
+      dplyr::mutate(
+        datetime_output = lubridate::with_tz(
+          .data$datetime_utc, output_tz
+        ),
+        # day = lubridate::wday(.data$datetime_output, label = TRUE),
+        # hour = lubridate::hour(.data$datetime_output),
+        datetime_facilitator = lubridate::with_tz(
+          .data$datetime_utc, facilitator_tz
+        ),
+        day_facilitator = lubridate::wday(
+          .data$datetime_facilitator, label = TRUE
+        ),
+        hour_facilitator = lubridate::hour(.data$datetime_facilitator),
+        .before = .data$n
+      ) %>%
+      dplyr::select(
+        -.data$datetime_utc
+      )
+  )
 }
 
 #' Make a UTC time vector
