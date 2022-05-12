@@ -1,13 +1,21 @@
 ## We have a couple simple parameters to set up, let's do that here.
 approved_books <- c(
+  "Bayes Rules!",
   "Data Science at the Command Line",
+  "Engineering Production-Grade Shiny Apps",
+  "Feature Engineering and Selection",
   "Forecasting: Principles and Practice",
+  "ggplot2",
   "Introduction to Statistical Learning",
   "JavaScript for R",
   "Mastering Shiny",
+  "Modern Dive",
   # "Practical Python Programming",
   "R for Data Science",
-  "R Packages"
+  "R Packages",
+  "Supervised Machine Learning for Text Analysis in R",
+  "Text Mining with R",
+  "Tidy Modeling with R"
 )
 
 days <- c(
