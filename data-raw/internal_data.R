@@ -1,5 +1,6 @@
 ## We have a couple simple parameters to set up, let's do that here.
 approved_books <- c(
+  "Advanced R",
   "Bayes Rules!",
   "Data Science at the Command Line",
   "Engineering Production-Grade Shiny Apps",
