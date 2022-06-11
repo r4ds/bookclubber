@@ -4,12 +4,9 @@
 \alias{run_app}
 \title{Run the Shiny Application}
 \usage{
-run_app(local = interactive(), ...)
+run_app(...)
 }
 \arguments{
-\item{local}{Logical indicating whether to run the app locally or on a
-server. Useful for debugging.}
-
 \item{...}{arguments to pass to golem_opts. See
 \code{\link[golem]{get_golem_options}} for more details.}
 }

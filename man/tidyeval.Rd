@@ -14,9 +14,11 @@ The \href{https://adv-r.hadley.nz/metaprogramming.html}{Metaprogramming section}
 \itemize{
 \item The \code{.data} pronoun is an object that represents the current
 slice of data. If you have a variable name in a string, use the
-\code{.data} pronoun to subset that variable with \code{[[}.\preformatted{my_var <- "disp"
+\code{.data} pronoun to subset that variable with \code{[[}.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{my_var <- "disp"
 mtcars \%>\% summarise(mean = mean(.data[[my_var]]))
-}
+}\if{html}{\out{</div>}}
 }
 }
 \keyword{internal}

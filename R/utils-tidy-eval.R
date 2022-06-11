@@ -25,5 +25,4 @@
 #' @keywords internal
 #' @importFrom rlang .data .env
 #' @aliases .data .env
-#' @export .data .env
 NULL
