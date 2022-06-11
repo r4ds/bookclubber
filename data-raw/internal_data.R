@@ -7,6 +7,7 @@ approved_books <- c(
   "Feature Engineering and Selection",
   "Forecasting: Principles and Practice",
   "ggplot2",
+  "HTTP testing in R",
   "Introduction to Statistical Learning",
   "JavaScript for R",
   "Mastering Shiny",
