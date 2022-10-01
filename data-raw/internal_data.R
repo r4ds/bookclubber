@@ -1,11 +1,15 @@
 ## We have a couple simple parameters to set up, let's do that here.
 approved_books <- c(
+  "AAAA Do Not Choose",
   "Advanced R",
   "Bayes Rules!",
+  "Computational Genomics with R",
   "Data Science at the Command Line",
+  "DevOps for Data Science",
   "Engineering Production-Grade Shiny Apps",
   "Feature Engineering and Selection",
   "Forecasting: Principles and Practice",
+  "Geospatial Health Data",
   "ggplot2",
   "HTTP testing in R",
   "Introduction to Statistical Learning",
@@ -13,8 +17,10 @@ approved_books <- c(
   "Mastering Shiny",
   "Modern Dive",
   # "Practical Python Programming",
+  "Python for Data Analysis",
   "R for Data Science",
   "R Packages",
+  "R4DS Project Club",
   "Supervised Machine Learning for Text Analysis in R",
   "Text Mining with R",
   "Tidy Modeling with R"

@@ -53,6 +53,12 @@ choose_time <- function(book_name,
   facilitator_times <- df %>%
     dplyr::filter(.data$user_id == facilitator_id)
 
+  if (!nrow(facilitator_times)) {
+    rlang::rlang_abort(
+      "That facilitator has not chosen any times for that book."
+    )
+  }
+
   facilitator_tz <- head(facilitator_times, 1)$timezone
 
   best_times <- df %>%
