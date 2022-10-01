@@ -10,7 +10,8 @@ run_app <- function(...) {
     server = .app_server,
     team_id = .team_id,
     site_url = .site_url,
-    enableBookmarking = "url"
+    enableBookmarking = "url",
+    onStart = .app_global
   )
 
   golem::with_golem_options(
