@@ -25,7 +25,7 @@ choose_time <- function(book_name,
     sheet = 1
   ) %>%
     dplyr::filter(.data$book_name == .env$book_name) %>%
-    dplyr::select(-.data$book_name) %>%
+    dplyr::select(-"book_name") %>%
     # Just keep the most recent submission for a given user for each day-time.
     dplyr::arrange(
       dplyr::desc(.data$submission_timestamp)
@@ -85,7 +85,7 @@ choose_time <- function(book_name,
         .before = .data$n
       ) %>%
       dplyr::select(
-        -.data$datetime_utc
+        -"datetime_utc"
       )
   )
 }

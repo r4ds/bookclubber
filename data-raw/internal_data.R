@@ -15,6 +15,7 @@ approved_books <- c(
   "Introduction to Statistical Learning",
   "JavaScript for R",
   "Mastering Shiny",
+  "Methods for Network Analysis",
   "Modern Dive",
   # "Practical Python Programming",
   "Python for Data Analysis",

@@ -55,7 +55,7 @@
           dplyr::mutate(
             availability = stringr::str_flatten(.data$time, collapse = ", ")
           ) %>%
-          dplyr::select(-.data$time) %>% # -availability,
+          dplyr::select(-"time") %>% # -availability,
           dplyr::distinct() %>%
           identity()
       })
@@ -89,14 +89,14 @@
           values_to = "available"
         ) %>%
         dplyr::select(
-          .data$user_name,
-          .data$user_id,
-          .data$book_name,
-          .data$timezone,
-          .data$submission_timestamp,
-          .data$day,
-          .data$hour,
-          .data$available
+          "user_name",
+          "user_id",
+          "book_name",
+          "timezone",
+          "submission_timestamp",
+          "day",
+          "hour",
+          "available"
         )
     }
   )
