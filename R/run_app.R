@@ -6,7 +6,7 @@
 #' @export
 run_app <- function(...) {
   app <- shinyslack::shinyslack_app(
-    ui = cookies::add_cookie_handlers(.app_ui),
+    ui = .app_ui,
     server = .app_server,
     team_id = .team_id,
     site_url = .site_url,
