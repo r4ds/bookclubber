@@ -17,6 +17,7 @@ approved_books <- c(
   "Mastering Shiny",
   "Methods for Network Analysis",
   "Modern Dive",
+  "Package Documentation",
   # "Practical Python Programming",
   "Python for Data Analysis",
   "R for Data Science",

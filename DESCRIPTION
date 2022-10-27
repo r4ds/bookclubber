@@ -1,6 +1,6 @@
 Package: bookclubber
 Title: Schedule R4DS Book Clubs
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: c(
     person(given = "Jon",
            family = "Harmon",
