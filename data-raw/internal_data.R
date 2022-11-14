@@ -12,6 +12,7 @@ approved_books <- c(
   "Geospatial Health Data",
   "ggplot2",
   "HTTP testing in R",
+  "Introduction to Probability for Data Science",
   "Introduction to Statistical Learning",
   "JavaScript for R",
   "Mastering Shiny",
@@ -22,10 +23,12 @@ approved_books <- c(
   "Python for Data Analysis",
   "R for Data Science",
   "R Packages",
-  "R4DS Project Club",
+  # "R4DS Project Club",
+  "Regression and Other Stories",
   "Supervised Machine Learning for Text Analysis in R",
   "Text Mining with R",
-  "Tidy Modeling with R"
+  "Tidy Modeling with R",
+  "What They Forgot to Teach You About R"
 )
 
 days <- c(

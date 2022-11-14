@@ -54,12 +54,12 @@ choose_time <- function(book_name,
     dplyr::filter(.data$user_id == facilitator_id)
 
   if (!nrow(facilitator_times)) {
-    rlang::rlang_abort(
+    rlang::abort(
       "That facilitator has not chosen any times for that book."
     )
   }
 
-  facilitator_tz <- head(facilitator_times, 1)$timezone
+  facilitator_tz <- facilitator_times$timezone[[1]]
 
   best_times <- df %>%
     dplyr::filter(
@@ -82,7 +82,7 @@ choose_time <- function(book_name,
           .data$datetime_facilitator, label = TRUE
         ),
         hour_facilitator = lubridate::hour(.data$datetime_facilitator),
-        .before = .data$n
+        .before = "n"
       ) %>%
       dplyr::select(
         -"datetime_utc"
@@ -164,6 +164,10 @@ choose_time <- function(book_name,
     diff + 7,
     diff
   )
+
+  # Add a week to give some breathing room.
+  diff <- diff + 7
+
   return(
     lubridate::ymd(
       lubridate::today() + diff,
