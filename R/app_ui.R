@@ -19,19 +19,19 @@
           style = "display: none;"
         ),
         shiny::column(
-          width = 3,
+          width = 2,
           shiny::htmlOutput(outputId = "username")
         ),
         shiny::column(
-          width = 3,
+          width = 2,
           shiny::selectInput(
             inputId = "bookname",
             label = "Select Book",
-            choices = approved_books
+            choices = "...loading..."
           )
         ),
         shiny::column(
-          width = 3,
+          width = 2,
           shiny::selectInput(
             inputId = "timezone",
             label = "Select Your Time Zone",
@@ -43,20 +43,18 @@
           offset = 1,
           shiny::p(shiny::strong("Finish by submitting")),
           shiny::actionButton(inputId = "submit", label = "Submit")
+        )
+      ),
+      shiny::fluidRow(
+        shiny::column(
+          width = 7,
+          shiny::h4("Select your availability"),
+          rhandsontable::rHandsontableOutput("time_table")
         ),
-        shiny::hr(),
-        shiny::fluidRow(
-          shiny::column(
-            width = 5,
-            offset = 1,
-            shiny::h4("Select your availability"),
-            rhandsontable::rHandsontableOutput("time_table")
-          ),
-          shiny::column(
-            width = 6,
-            shiny::h4("Your availability selections"),
-            shiny::tableOutput("selected")
-          )
+        shiny::column(
+          width = 5,
+          shiny::h4("Your availability selections"),
+          shiny::tableOutput("selected")
         )
       )
     )
