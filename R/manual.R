@@ -18,7 +18,7 @@ choose_time <- function(book_name,
                         facilitator_id,
                         output_tz = "America/Chicago") {
   # Verify that book_name is in our list.
-  book_name <- rlang::arg_match(book_name, values = approved_books)
+  # book_name <- rlang::arg_match(book_name, values = approved_books)
 
   df <- googlesheets4::read_sheet(
     "1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc",

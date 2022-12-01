@@ -4,6 +4,36 @@
 #'     DO NOT REMOVE.
 #' @keywords internal
 .app_server <- function(input, output, session) {
+  # Load the books once. No need to make this reactive.
+  .approved_books <- .load_books()
+
+  # Set the book drop-down.
+  shiny::observe(
+    {
+      book_selected <- "PLEASE SELECT A BOOK"
+      book_choices <- c(
+        book_selected,
+        .approved_books$book_name
+      )
+
+      query <- shiny::parseQueryString(session$clientData$url_search)
+
+      if (
+        !is.null(query[["bookname"]]) &&
+        query[["bookname"]] %in% book_choices
+      ) {
+        book_selected <- query[["bookname"]]
+      }
+
+      shiny::updateSelectInput(
+        session,
+        "bookname",
+        choices = book_choices,
+        selected = book_selected
+      )
+    }
+  )
+
   # Update the timezone dropdown to use the detected zone by default. This is
   # inspired by code from https://github.com/rpodcast/shinycal.
   shiny::observe({
@@ -125,46 +155,29 @@
       # Technically if it doesn't save we don't tell them. Issue #16
     }
   )
-
-  shiny::observe({
-    # Get URL query
-    query <- shiny::parseQueryString(session$clientData$url_search)
-
-    # Ignore if the URL query is null
-    if (
-      !is.null(query[["bookname"]]) && query[["bookname"]] %in% approved_books
-    ) {
-      # Update the select input
-      shiny::updateSelectInput(
-        session,
-        "bookname",
-        selected  = query[["bookname"]],
-        choices = approved_books
-      )
-    }
-  })
 }
 
-#' Stuff to run at startup
+#' Load Books
 #'
-#' I'll have to see what should universally run at startup (eg, definitions of
-#' the possible slots) vs what should be checked during use (eg, we should load
-#' the "used" slots from time to time, although we can probably do that in
-#' global with a reactivePoll, so... yeah, this will get more stuff).
-#'
-#' After reading up a bit on the golem github, it looks like this isn't QUITE
-#' what I want. We'll explore this further as we go, but likely we just want
-#' most of this in server, with maybe a little bit in the golem_opts in run_app.
-#'
+#' @return A tibble with the valid books.
 #' @keywords internal
-.app_global <- function() {
-  # Google login. Note that you must have the json named here in your inst
-  # folder. If you are working on this app and believe you should be trusted
-  # with this access, please contact the maintainer.
-  googlesheets4::gs4_auth(
-    path = system.file(
-      "bookclubs4ds-service-account.json",
-      package = "bookclubber"
-    )
+.load_books <- function() {
+  dplyr::arrange(
+    .read_gs4(
+      sheet = "Books",
+      range = "A:A",
+      col_types = "c"
+    ),
+    "book_name"
   )
+}
+
+#' Read a Sheet from the GS4 Workbook
+#'
+#' @param ... Arguments passed on to [googlesheets4::read_sheet()].
+#'
+#' @return A google sheet.
+#' @keywords internal
+.read_gs4 <- function(...) {
+  googlesheets4::read_sheet(.gs4_sheet_id, ...)
 }

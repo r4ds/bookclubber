@@ -1,35 +1,5 @@
 ## We have a couple simple parameters to set up, let's do that here.
-approved_books <- c(
-  "AAAA Do Not Choose",
-  "Advanced R",
-  "Bayes Rules!",
-  "Computational Genomics with R",
-  "Data Science at the Command Line",
-  "DevOps for Data Science",
-  "Engineering Production-Grade Shiny Apps",
-  "Feature Engineering and Selection",
-  "Forecasting: Principles and Practice",
-  "Geospatial Health Data",
-  "ggplot2",
-  "HTTP testing in R",
-  "Introduction to Probability for Data Science",
-  "Introduction to Statistical Learning",
-  "JavaScript for R",
-  "Mastering Shiny",
-  "Methods for Network Analysis",
-  "Modern Dive",
-  "Package Documentation",
-  # "Practical Python Programming",
-  "Python for Data Analysis",
-  "R for Data Science",
-  "R Packages",
-  # "R4DS Project Club",
-  "Regression and Other Stories",
-  "Supervised Machine Learning for Text Analysis in R",
-  "Text Mining with R",
-  "Tidy Modeling with R",
-  "What They Forgot to Teach You About R"
-)
+.gs4_sheet_id <- "1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc"
 
 days <- c(
   "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
@@ -95,7 +65,7 @@ week_calendar <- data.frame(
 .site_url <- "https://r4dscommunity.shinyapps.io/bookclubber/"
 
 usethis::use_data(
-  approved_books,
+  .gs4_sheet_id,
   week_calendar,
   .team_id,
   .site_url,
@@ -106,7 +76,7 @@ usethis::use_data(
 rm(
   time_slots,
   week_calendar,
-  approved_books,
+  .gs4_sheet_id,
   days,
   .team_id,
   .site_url
