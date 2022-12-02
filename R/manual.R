@@ -23,34 +23,34 @@ choose_time <- function(book_name,
   df <- googlesheets4::read_sheet(
     "1G5KjY77ONuaHj530ttzrhCS9WN4_muYxfLgP3xK24Cc",
     sheet = 1
-  ) %>%
-    dplyr::filter(.data$book_name == .env$book_name) %>%
-    dplyr::select(-"book_name") %>%
+  ) |>
+    dplyr::filter(.data$book_name == .env$book_name) |>
+    dplyr::select(-"book_name") |>
     # Just keep the most recent submission for a given user for each day-time.
     dplyr::arrange(
       dplyr::desc(.data$submission_timestamp)
-    ) %>%
+    ) |>
     dplyr::distinct(
       .data$user_name,
       .data$user_id,
       .data$day,
       .data$hour,
       .keep_all = TRUE
-    ) %>%
-    dplyr::filter(.data$available) %>%
+    ) |>
+    dplyr::filter(.data$available) |>
     # Convert times to UTC. We're going to assume they're answering for a random
     # day next week. Eventually we'll make that explicit.
-    dplyr::rowwise() %>%
+    dplyr::rowwise() |>
     dplyr::mutate(
       datetime_utc = .make_utc(
         day = .data$day,
         hour = .data$hour,
         timezone = .data$timezone
       )
-    ) %>%
+    ) |>
     dplyr::ungroup()
 
-  facilitator_times <- df %>%
+  facilitator_times <- df |>
     dplyr::filter(.data$user_id == facilitator_id)
 
   if (!nrow(facilitator_times)) {
@@ -61,14 +61,14 @@ choose_time <- function(book_name,
 
   facilitator_tz <- facilitator_times$timezone[[1]]
 
-  best_times <- df %>%
+  best_times <- df |>
     dplyr::filter(
       .data$datetime_utc %in% facilitator_times$datetime_utc
-    ) %>%
+    ) |>
     dplyr::count(.data$datetime_utc, sort = TRUE)
 
   return(
-    best_times %>%
+    best_times |>
       dplyr::mutate(
         datetime_output = lubridate::with_tz(
           .data$datetime_utc, output_tz
@@ -83,7 +83,7 @@ choose_time <- function(book_name,
         ),
         hour_facilitator = lubridate::hour(.data$datetime_facilitator),
         .before = "n"
-      ) %>%
+      ) |>
       dplyr::select(
         -"datetime_utc"
       )
