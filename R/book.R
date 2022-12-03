@@ -25,9 +25,8 @@
   # This should be turned into a module. The UI should become static if the book
   # is set via url.
 
-  # Load the books once. No need to make this reactive. Ideally though this
-  # should be a global reactive poll.
-  .approved_books <- .load_books()
+  # We don't need the approved book list to change while they're in here.
+  .approved_books <- shiny::isolate(.approved_books())
 
   # Return an observer that sets the book drop-down. I don't think this actually
   # needs to be an observer, it should just happen onload.
@@ -77,7 +76,23 @@
         range = "A:A",
         col_types = "c"
       ),
-      "book_name"
+      .data$book_name
     )
   )
+}
+
+#' Check Club Sheet Modified Time
+#'
+#' @return A string representing when the sheet was modified.
+#' @keywords internal
+.check_books <- function() {
+  req <- googledrive::request_generate(
+    endpoint = "drive.files.get",
+    params = list(
+      fileId = .gs4_sheet_id,
+      fields = "modifiedTime"
+    )
+  )
+  res <- googledrive::do_request(req)
+  return(res$modifiedTime)
 }

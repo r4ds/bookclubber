@@ -1,14 +1,13 @@
 #' Save User Selections
 #'
-#' @param user_info A named character vector
-#' @param book_name
-#' @param timezone
-#' @param time_table
+#' @param user_name The name of this user.
+#' @param user_id The Slack id of this user.
+#' @param book_name The name of the book for which they're choosing times.
+#' @param timezone The user's timezone.
+#' @param time_table The user's selections.
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return The sheet ID, invisibly.
+#' @keywords internal
 .save_availability <- function(user_name,
                                user_id,
                                book_name,
