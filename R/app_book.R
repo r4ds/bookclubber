@@ -80,19 +80,3 @@
     )
   )
 }
-
-#' Check Club Sheet Modified Time
-#'
-#' @return A string representing when the sheet was modified.
-#' @keywords internal
-.check_books <- function() {
-  req <- googledrive::request_generate(
-    endpoint = "drive.files.get",
-    params = list(
-      fileId = .gs4_sheet_id,
-      fields = "modifiedTime"
-    )
-  )
-  res <- googledrive::do_request(req)
-  return(res$modifiedTime)
-}
