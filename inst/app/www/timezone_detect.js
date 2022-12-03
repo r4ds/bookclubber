@@ -1,8 +1,8 @@
 $( document ).ready(function() {
   var d = new Date();
-  var target = $('#clientTime');
-  var timezone = $('#clientZone')
+  var target = $('#client_time');
+  var timezone = $('#timezone-client_zone');
 
   timezone.val(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  timezone.trigger("change")
+  timezone.trigger("change");
 });

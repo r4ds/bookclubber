@@ -11,32 +11,17 @@
       # Application title
       shiny::titlePanel("R4DS Book Club Planner"),
       shiny::fluidRow(
-        # Add HTML to the page to store the timezone.
-        shiny::tags$input(
-          type = "text",
-          id = "clientZone",
-          name = "Client zone",
-          style = "display: none;"
+        shiny::column(
+          width = 2,
+          .user_ui()
         ),
         shiny::column(
           width = 2,
-          shiny::htmlOutput(outputId = "username")
+          .book_ui()
         ),
         shiny::column(
           width = 2,
-          shiny::selectInput(
-            inputId = "bookname",
-            label = "Select Book",
-            choices = "...loading..."
-          )
-        ),
-        shiny::column(
-          width = 2,
-          shiny::selectInput(
-            inputId = "timezone",
-            label = "Select Your Time Zone",
-            choices = OlsonNames()
-          )
+          .timezone_ui()
         ),
         shiny::column(
           width = 2,
@@ -47,14 +32,9 @@
       ),
       shiny::fluidRow(
         shiny::column(
-          width = 7,
+          width = 12,
           shiny::h4("Select your availability"),
           rhandsontable::rHandsontableOutput("time_table")
-        ),
-        shiny::column(
-          width = 5,
-          shiny::h4("Your availability selections"),
-          shiny::tableOutput("selected")
         )
       )
     )

@@ -17,7 +17,7 @@
 #'
 #'   ```
 #'   my_var <- "disp"
-#'   mtcars %>% summarise(mean = mean(.data[[my_var]]))
+#'   mtcars |> summarise(mean = mean(.data[[my_var]]))
 #'   ```
 #'
 #' @md
