@@ -1,5 +1,3 @@
-# I think I need to make this one an actual module to make it work.
-
 .timezone_ui <- function(id = "timezone") {
   return(
     shiny::tagList(

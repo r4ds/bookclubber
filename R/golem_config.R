@@ -15,9 +15,6 @@
 
 #' Read App Config
 #'
-#' This was created by \code{\link[golem]{create_golem}}. It doesn't seem useful
-#' to me, and I'll likely delete it unless we find a way it's being used.
-#'
 #' @param value Value to retrieve from the config file.
 #' @param config GOLEM_CONFIG_ACTIVE value. If unset, R_CONFIG_ACTIVE. If unset,
 #'   "default".
