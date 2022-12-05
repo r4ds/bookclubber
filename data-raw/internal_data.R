@@ -34,13 +34,12 @@
 )
 
 .team_id <- "T6UC1DKJQ"
-.site_url <- "https://r4dscommunity.shinyapps.io/bookclubber/"
 
 usethis::use_data(
   .gs4_sheet_id,
-  .week_calendar,
+  .days,
+  .time_slots,
   .team_id,
-  .site_url,
   internal = TRUE,
   overwrite = TRUE
 )
@@ -50,6 +49,5 @@ rm(
   .week_calendar,
   .gs4_sheet_id,
   .days,
-  .team_id,
-  .site_url
+  .team_id
 )

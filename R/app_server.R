@@ -14,9 +14,18 @@
   .book_server() # Should become fully module-ized later.
   .timezone_server()
 
-  # Display the week calendar. I haven't made this a module yet since it's
-  # MOSTLY just rhandsontable, but it will probably convert soonish.
-  output$time_table <- .calendar_selector()
+  # I need to sort out the reactivity to make this its own module. For now this
+  # works and other attempts didn't.
+  shiny::observe({
+    shiny::req(input[[shiny::NS("timezone", "selected_zone")]])
+    output[[shiny::NS("calendar", "availability")]] <- .calendar_selector(
+      input[[shiny::NS("timezone", "selected_zone")]]
+    )
+  })
+
+  # This all works right now. Ideally I'd like to unselect unavailable times in
+  # the UI if a user clicks-and-drags and clicks space to select over
+  # unavailable times. But at least it works!
 
   # Save their selections on Submit.
   shiny::observeEvent(
@@ -26,7 +35,7 @@
       slack_user_info()[["user_id"]],
       input$book_name,
       input[[shiny::NS("timezone", "selected_zone")]],
-      input$time_table
+      input[[shiny::NS("calendar", "availability")]]
     )
   )
 }

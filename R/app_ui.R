@@ -34,7 +34,8 @@
         shiny::column(
           width = 12,
           shiny::h4("Select your availability"),
-          rhandsontable::rHandsontableOutput("time_table")
+          shiny::p("(missing boxes are busy with other clubs)"),
+          .calendar_ui()
         )
       )
     )
