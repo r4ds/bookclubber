@@ -28,6 +28,11 @@ jobs:
           echo "SLACK_SKIPLOAD=TRUE" >> .Renviron
         shell: bash {0}
 
+      - name: Set up service account
+        run: |
+          echo "${{secrets.GOOGLE_SERVICE_ACCOUNT"}}" >> inst/bookclubs4ds-service-account.json"
+        shell: bash {0}
+
       - name: Push to shinyapps
         run: |
           rsconnect::setAccountInfo(name='r4dscommunity', token=${{secrets.SHINYAPPS_TOKEN}}, secret=${{secrets.SHINYAPPS_SECRET}})
