@@ -28,7 +28,7 @@ jobs:
 
       - name: Set up service account
         run: |
-          echo "${{secrets.GOOGLE_SERVICE_ACCOUNT"}}" >> inst/bookclubs4ds-service-account.json"
+          echo "${{secrets.GOOGLE_SERVICE_ACCOUNT}}" >> inst/bookclubs4ds-service-account.json
         shell: bash {0}
 
       - name: Push to shinyapps
