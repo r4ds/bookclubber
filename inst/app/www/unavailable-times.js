@@ -85,7 +85,7 @@ $(function() {
       var row = hot.getSelected()[0][0];
       var col = hot.getSelected()[0][1];
   
-      // Select 'closest next' cell with 
+      // Select 'closest previous' cell with 
       // non-null data, in case it exists
       var cellData = null;
       while (cellData === null) {
