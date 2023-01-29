@@ -34,7 +34,9 @@
         shiny::column(
           width = 12,
           shiny::h4("Select your availability"),
-          shiny::p("(missing boxes are busy with other clubs)"),
+          shiny::p(
+            "(missing boxes are unavailable; other R4DS clubs are using the
+            Zoom account at those times)"),
           .calendar_ui()
         )
       )
