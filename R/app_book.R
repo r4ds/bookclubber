@@ -77,7 +77,7 @@
         range = "A:D",
         col_types = "cccc"
       ),
-      .data$book_name
+      tolower(.data$book_name)
     )
   )
 }
