@@ -72,9 +72,10 @@
   return(
     dplyr::arrange(
       .read_gs4(
-        sheet = "Books",
-        range = "A:A",
-        col_types = "c"
+        sheet = "Approved Books",
+        # Select a couple extra columns to avoid issues with rearrangements.
+        range = "A:D",
+        col_types = "cccc"
       ),
       .data$book_name
     )
