@@ -65,6 +65,6 @@
   googlesheets4::sheet_append(
     .gs4_sheet_id,
     user_availability_df,
-    sheet = 1
+    sheet = "Signups"
   )
 }

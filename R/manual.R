@@ -48,14 +48,17 @@ choose_time <- function(book_name,
         timezone = .data$timezone
       )
     ) |>
-    dplyr::ungroup()
+    dplyr::ungroup() |>
+    dplyr::filter(
+      !(.data$datetime_utc %in% .load_unavailable_times()$unavailable_time)
+    )
 
   facilitator_times <- df |>
     dplyr::filter(.data$user_id == facilitator_id)
 
   if (!nrow(facilitator_times)) {
     rlang::abort(
-      "That facilitator has not chosen any times for that book."
+      "That facilitator has not chosen any valid times for that book."
     )
   }
 
