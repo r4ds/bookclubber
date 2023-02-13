@@ -12,15 +12,6 @@
   # I don't love using <<- to put things into the global environment, but right
   # now this seems to be the cleanest way to do this.
 
-  # Load the books for everybody.
-  .approved_books <<- shiny::reactivePoll(
-    intervalMillis = 10L*60L*1000L, # No need to check often.
-    # intervalMillis = 1000L, # For testing
-    session = NULL,
-    checkFunc = .check_club_sheet,
-    valueFunc = .load_books
-  )
-
   # Load the globally unavailable times.
   .unavailable_times <<- shiny::reactivePoll(
     intervalMillis = 10L*60L*1000L, # No need to check often.
@@ -50,18 +41,23 @@
 
 #' Check Club Sheet Modified Time
 #'
-#' @return A string representing when the sheet was modified.
+#' @return A list with components of when the sheet was modified and the size of
+#'   the sheet. It seems that this combo triggers updates more accurately than
+#'   just the modifiedTime alone.
 #' @keywords internal
 .check_club_sheet <- function() {
   req <- googledrive::request_generate(
     endpoint = "drive.files.get",
     params = list(
       fileId = .gs4_sheet_id,
-      fields = "modifiedTime"
+      fields = "modifiedTime, size"
+      # fields = "modifiedTime"
     )
   )
   res <- googledrive::do_request(req)
-  return(res$modifiedTime)
+  # cli::cli_inform("Latest modified time: {res$modifiedTime}")
+  # cli::cli_inform("Latest size: {res$size}")
+  return(res)
 }
 
 #' Load Unavailable Times
@@ -91,4 +87,14 @@
     dplyr::arrange(.data$unavailable_time)
 
   return(club_times)
+}
+
+#' Read a Sheet from the GS4 Workbook
+#'
+#' @param ... Arguments passed on to [googlesheets4::read_sheet()].
+#'
+#' @return A google sheet.
+#' @keywords internal
+.read_gs4 <- function(...) {
+  googlesheets4::read_sheet(.gs4_sheet_id, ...)
 }

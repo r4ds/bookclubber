@@ -1,6 +1,6 @@
 #' User UI Side
 #'
-#' @param id ID of this user displayer.
+#' @inheritParams .shared-parameters
 #'
 #' @return A shiny module.
 #' @keywords internal
@@ -12,7 +12,7 @@
 
 #' User Server Side
 #'
-#' @param id ID of this user displayer.
+#' @inheritParams .shared-parameters
 #' @param slack_user_info The object that contains info from Slack.
 #'
 #' @return A moduleServer object.
@@ -23,7 +23,7 @@
       paste(
         shiny::strong("Logged in as"),
         shiny::br(),
-        slack_user_info()[["user_name"]]
+        slack_user_info()[["display_name"]]
       )
     )
   })

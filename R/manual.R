@@ -9,49 +9,20 @@
 #'   mshiny.
 #' @param facilitator_id The Slack ID of the facilitator for this group.
 #'   Available via the user's "full profile" in Slack.
-#' @param output_tz A timezone in which to show the result, by default
+#' @param r4ds_tz A timezone in which to show the result, by default
 #'   "America/Chicago" since that's what the R4DS calendar is in.
 #'
 #' @return The best times, as a tibble.
 #' @export
 choose_time <- function(book_name,
                         facilitator_id,
-                        output_tz = "America/Chicago") {
+                        r4ds_tz = "America/Chicago") {
   # Verify that book_name is in our list.
   # book_name <- rlang::arg_match(book_name, values = approved_books)
 
-  df <- googlesheets4::read_sheet(
-    .gs4_sheet_id,
-    sheet = 1
-  ) |>
+  df <- .load_signups(.load_unavailable_times()$unavailable_time) |>
     dplyr::filter(.data$book_name == .env$book_name) |>
-    dplyr::select(-"book_name") |>
-    # Just keep the most recent submission for a given user for each day-time.
-    dplyr::arrange(
-      dplyr::desc(.data$submission_timestamp)
-    ) |>
-    dplyr::distinct(
-      .data$user_name,
-      .data$user_id,
-      .data$day,
-      .data$hour,
-      .keep_all = TRUE
-    ) |>
-    dplyr::filter(.data$available) |>
-    # Convert times to UTC. We're going to assume they're answering for a random
-    # day next week. Eventually we'll make that explicit.
-    dplyr::rowwise() |>
-    dplyr::mutate(
-      datetime_utc = .make_utc(
-        day = .data$day,
-        hour = .data$hour,
-        timezone = .data$timezone
-      )
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::filter(
-      !(.data$datetime_utc %in% .load_unavailable_times()$unavailable_time)
-    )
+    dplyr::select(-"book_name")
 
   facilitator_times <- df |>
     dplyr::filter(.data$user_id == facilitator_id)
@@ -73,11 +44,9 @@ choose_time <- function(book_name,
   return(
     best_times |>
       dplyr::mutate(
-        datetime_output = lubridate::with_tz(
-          .data$datetime_utc, output_tz
+        datetime_r4ds = lubridate::with_tz(
+          .data$datetime_utc, r4ds_tz
         ),
-        # day = lubridate::wday(.data$datetime_output, label = TRUE),
-        # hour = lubridate::hour(.data$datetime_output),
         datetime_facilitator = lubridate::with_tz(
           .data$datetime_utc, facilitator_tz
         ),
@@ -85,10 +54,17 @@ choose_time <- function(book_name,
           .data$datetime_facilitator, label = TRUE
         ),
         hour_facilitator = lubridate::hour(.data$datetime_facilitator),
-        .before = "n"
+        day_r4ds = lubridate::wday(
+          .data$datetime_r4ds, label = TRUE
+        ),
+        hour_r4ds = lubridate::hour(.data$datetime_r4ds)
       ) |>
       dplyr::select(
-        -"datetime_utc"
+        "n",
+        "day_facilitator",
+        "hour_facilitator",
+        "day_r4ds",
+        "hour_r4ds"
       )
   )
 }

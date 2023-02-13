@@ -4,6 +4,7 @@
 .days <- c(
   "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
 )
+.days_factor <- factor(.days, levels = .days, ordered = TRUE)
 
 .time_slots <- c(
   "12 AM (midnight)",
@@ -18,27 +19,34 @@
   )
 )
 
+.week_calendar_long <- dplyr::tibble(
+  day = rep(.days_factor, each = 24),
+  hour = rep(0:23, 7)
+)
+
 # The logic: rhandsontable needs a df of values to use to create the table.
 # FALSE = unselected, TRUE = selected, NA = no checkbox. So our starting point
 # is a table full of falses for every timeslot, and then we'll fill in NAs
 # whenever that slot isn't available (to this club). We will likely move all of
 # that logic into a function that runs when the user loads the page, since it
 # can change.
-.week_calendar <- data.frame(
-  matrix(
-    F,
-    nrow = length(.time_slots),
-    ncol = length(.days),
-    dimnames = list(.time_slots, .days)
-  )
-)
+
+# We don't actually use this anywhere right now.
+# .week_calendar <- data.frame(
+#   matrix(
+#     F,
+#     nrow = length(.time_slots),
+#     ncol = length(.days),
+#     dimnames = list(.time_slots, .days)
+#   )
+# )
 
 .team_id <- "T6UC1DKJQ"
 
 usethis::use_data(
   .gs4_sheet_id,
-  .days,
   .time_slots,
+  .week_calendar_long,
   .team_id,
   internal = TRUE,
   overwrite = TRUE
@@ -46,8 +54,9 @@ usethis::use_data(
 
 rm(
   .time_slots,
-  .week_calendar,
+  .week_calendar_long,
   .gs4_sheet_id,
   .days,
+  .days_factor,
   .team_id
 )
