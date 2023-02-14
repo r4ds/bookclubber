@@ -35,8 +35,8 @@
           width = 12,
           shiny::h4("Select your availability"),
           shiny::p(
-            "(missing boxes are unavailable; other R4DS clubs are using the
-            Zoom account at those times)"),
+            "(missing check boxes are unavailable; other R4DS clubs are using the
+            Zoom account at those times; colored cells indicate existing sign ups)"),
           .calendar_ui()
         )
       )

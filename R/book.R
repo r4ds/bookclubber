@@ -1,5 +1,7 @@
 #' UI to Choose a Book
 #'
+#' @inheritParams .shared-parameters
+#'
 #' @return A shiny module to select a book.
 #' @keywords internal
 .book_ui <- function(id = "book_name") {
@@ -8,34 +10,31 @@
     shiny::selectInput(
       inputId = id,
       label = "Select Book",
-      choices = "...loading..."
+      choices = c("...loading..." = "")
     )
   )
 }
 
 #' Load Books and Set Dropdown Values
 #'
-#' @param session The shiny session. I don't know of a case where we shouldn't
-#'   use the default.
+#' @inheritParams .shared-parameters
+#' @param approved_books A data.frame of approved books with column `book_name`.
 #'
 #' @return An observer that sets up the book drop-down menu.
 #' @keywords internal
-.book_server <- function(id = "book_name",
-                         session = shiny::getDefaultReactiveDomain()) {
-  # This should be turned into a module. The UI should become static if the book
-  # is set via url.
+.book_observer <- function(id = "book_name",
+                           approved_books,
+                           session = shiny::getDefaultReactiveDomain()) {
+  # This should be turned into a module.
 
-  # We don't need the approved book list to change while they're in here.
-  .approved_books <- shiny::isolate(.approved_books())
-
-  # Return an observer that sets the book drop-down. I don't think this actually
-  # needs to be an observer, it should just happen onload.
+  # Return an observer that sets the book drop-down. We still want to SHOW them
+  # all of the options, though, so they can choose another book if they'd like.
   return(
     shiny::observe(
       {
         book_choices <- c(
-          "PLEASE SELECT A BOOK",
-          .approved_books$book_name
+          "PLEASE SELECT A BOOK" = "",
+          approved_books()$book_name
         )
 
         query <- shiny::parseQueryString(session$clientData$url_search)
@@ -48,7 +47,7 @@
             session,
             id,
             label = "Book Selected",
-            choices = query[["bookname"]],
+            choices = book_choices,
             selected = query[["bookname"]]
           )
         } else {
@@ -56,7 +55,7 @@
             session,
             id,
             choices = book_choices,
-            selected = "PLEASE SELECT A BOOK"
+            selected = NULL
           )
         }
       }
@@ -69,6 +68,7 @@
 #' @return A tibble with the valid books.
 #' @keywords internal
 .load_books <- function() {
+  cli::cli_alert("Refreshing books.")
   return(
     dplyr::arrange(
       .read_gs4(

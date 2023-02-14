@@ -1,0 +1,15 @@
+function hot_heatmap_secondary(instance, td, row, col, prop, value, cellProperties) {
+  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+
+  simple_scale  = chroma.scale(['#FFFFFF', '#38761D']);
+
+  // For now I'm ~hard-coding the matrix that we use for coloring, by sending it
+  // in as JSON to substitute into this function.
+  density_map = %densitymap;
+
+  value = density_map[row][col];
+  // For now I'm just taking this out of 10.
+  strength = Math.min((value - 1)/10, 1);
+
+  td.style.backgroundColor = simple_scale(strength).hex();
+}
