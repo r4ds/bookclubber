@@ -8,8 +8,9 @@ function hot_heatmap_secondary(instance, td, row, col, prop, value, cellProperti
   density_map = %densitymap;
 
   value = density_map[row][col];
-  // For now I'm just taking this out of 10.
-  strength = Math.min((value - 1)/10, 1);
+  // For now I'm just taking this out of 6, because that's really about as big
+  // of a group as we want.
+  strength = Math.min(value/6, 1);
 
   td.style.backgroundColor = simple_scale(strength).hex();
 }
