@@ -19,12 +19,13 @@
 #' @return A [rhandsontable::renderRHandsontable()].
 #' @keywords internal
 .calendar_selector <- function(user_id, user_timezone, selected_book, signups) {
-  # Note: Put in NA to block things out, but we need to turn those into FALSE
+  # Put in NA to block things out, but we need to turn those into FALSE
   # when we save.
   rhandsontable::renderRHandsontable({
     rhandsontable::rhandsontable(
       .preset_table(user_id, user_timezone, selected_book, signups),
-      contextMenu = FALSE
+      contextMenu = FALSE,
+      rowHeaderWidth = 80
     ) |>
       .format_table(user_timezone, selected_book, signups)
   })
@@ -120,15 +121,47 @@
       names_from = "day",
       values_from = "available"
     ) |>
-    dplyr::mutate(hour = .time_slots) |>
+    dplyr::mutate(hour = .hour_to_name(.data$hour, user_timezone)) |>
     tibble::column_to_rownames("hour")
 
   return(preset_table)
 }
 
+#' Create rownames from hours
+#'
+#' @inheritParams .shared-parameters
+#' @param hour An integer vector of hours. This will almost certainly just be
+#'   0:23 repeated 7 times.
+#'
+#' @return A character vector the same length as hour, with formatted times.
+#' @keywords internal
+.hour_to_name <- function(hour, user_timezone) {
+  # Convert to 24-hour clock.
+  hour <- dplyr::case_when(
+    hour == 0 ~ 12L,
+    hour > 12 ~ hour - 12L,
+    TRUE ~ hour
+  )
+  return(
+    paste0(
+      hour,
+      ":",
+      stringr::str_pad(
+        .tz_minutes(user_timezone),
+        width = 2L,
+        pad = "0"
+      ),
+      c(
+        rep("AM", 12),
+        rep("PM", 12)
+      )
+    )
+  )
+}
+
 #' Convert unavailable times to this user's timezone
 #'
-#' Note: This currently depends on the global object `.unavailable_times()`.
+#' This currently depends on the global object `.unavailable_times()`.
 #'
 #' @inheritParams .shared-parameters
 #'

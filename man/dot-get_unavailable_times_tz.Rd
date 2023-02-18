@@ -14,6 +14,6 @@ character scalar).}
 A tibble with columns day, hour, and unavailable.
 }
 \description{
-Note: This currently depends on the global object `.unavailable_times()`.
+This currently depends on the global object `.unavailable_times()`.
 }
 \keyword{internal}

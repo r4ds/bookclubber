@@ -41,6 +41,16 @@ choose_time <- function(book_name,
     ) |>
     dplyr::count(.data$datetime_utc, sort = TRUE)
 
+  if (.tz_minutes(facilitator_tz) > 0) {
+    rlang::warn(
+      paste(
+        "Facilitator timezone has a",
+        .tz_minutes(facilitator_tz),
+        "minute offset."
+      )
+    )
+  }
+
   return(
     best_times |>
       dplyr::mutate(
@@ -104,6 +114,8 @@ choose_time <- function(book_name,
 .make_single_utc <- function(day, hour, timezone) {
   target_date <- .next_weekday(day, timezone)
   lubridate::hour(target_date) <- hour
+  lubridate::minute(target_date) <- .tz_minutes(timezone)
+
   return(lubridate::with_tz(target_date, "UTC"))
 }
 
@@ -153,4 +165,19 @@ choose_time <- function(book_name,
       tz = tz
     )
   )
+}
+
+#' Find the Minutes Offset of a Timezone
+#'
+#' @param timezone The timezone to check.
+#'
+#' @return The integer minutes difference between the supplied timezone and the
+#'   same time in UTC.
+#' @keywords internal
+.tz_minutes <- function(timezone) {
+  # Note: There's technically one timezone, "Australia/LHI" that has a 30-minute
+  # DST switch. They break things and hopefully they know what they did.
+  midnight <- lubridate::ymd_hms("2023-01-01 00:00:00", tz = "UTC")
+  midnight_tz <- lubridate::with_tz(midnight, tzone = timezone)
+  return(lubridate::minute(midnight_tz))
 }
