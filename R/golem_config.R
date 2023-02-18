@@ -1,6 +1,6 @@
 #' Access files in the current app
 #'
-#' NOTE: If you manually change your package name in the DESCRIPTION, don't
+#' If you manually change your package name in the DESCRIPTION, don't
 #' forget to change it here too, and in the config file. For a safer name change
 #' mechanism, use the `golem::set_golem_name()` function.
 #'
