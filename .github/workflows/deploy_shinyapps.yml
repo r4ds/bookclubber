@@ -11,6 +11,10 @@ jobs:
   deploy-shiny:
     if: github.repository_owner == 'r4ds'
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GH_PAT }}
+
     steps:
       - uses: actions/checkout@v3
 
