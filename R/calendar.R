@@ -1,3 +1,16 @@
+.ui_calendar_row <- function() {
+  shiny::fluidRow(
+    shiny::column(
+      width = 12,
+      shiny::h4("Select your availability"),
+      shiny::p(
+        "(missing check boxes are unavailable; other R4DS clubs are using the
+            Zoom account(s) at those times; colored cells indicate existing sign ups)"),
+      .calendar_ui()
+    )
+  )
+}
+
 #' UI to Choose Times
 #'
 #' @inheritParams .shared-parameters

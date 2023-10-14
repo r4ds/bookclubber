@@ -9,4 +9,5 @@ pkgload::load_all(
 )
 
 options("golem.app.prod" = TRUE)
+# options("golem.app.prod" = FALSE)
 run_app()
