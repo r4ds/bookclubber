@@ -37,3 +37,19 @@
     use_parent = use_parent
   )
 }
+
+#' Add external Resources to the Application
+#'
+#' This function is internally used to add external
+#' resources inside the Shiny application.
+#'
+#' @keywords internal
+.golem_add_external_resources <- function() {
+  golem::add_resource_path("www", .app_sys("app/www"))
+  shiny::tags$head(
+    golem::bundle_resources(
+      path = .app_sys("app/www"),
+      app_title = "bookclubber"
+    )
+  )
+}
