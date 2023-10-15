@@ -17,6 +17,7 @@ License: MIT + file LICENSE
 URL: https://github.com/r4ds/bookclubber
 BugReports: https://github.com/r4ds/bookclubber/issues
 Imports: 
+    bookclubdata,
     config (>= 0.3.1),
     dplyr,
     golem (>= 0.3.1),

@@ -182,7 +182,7 @@
 #' @keywords internal
 .get_unavailable_times_tz <- function(user_timezone) {
   return(
-    shiny::isolate(.unavailable_times()) |>
+    .unavailable_times() |>
       dplyr::mutate(
         unavailable_time = lubridate::with_tz(
           .data$unavailable_time, user_timezone

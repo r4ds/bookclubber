@@ -7,9 +7,6 @@
 .app_global()
 }
 \description{
-I'll have to see what should universally run at startup (eg, definitions of
-the possible slots) vs what should be checked during use (eg, we should load
-the "used" slots from time to time, although we can probably do that in
-global with a reactivePoll, so... yeah, this will get more stuff).
+Stuff to run at startup
 }
 \keyword{internal}
