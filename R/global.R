@@ -13,13 +13,9 @@
   # Note that you must have the json named here in your inst folder. If you are
   # working on this app and believe you should be trusted with this access,
   # please contact the maintainer.
-  googlesheets4::gs4_auth(
-    path = .app_sys("bookclubs4ds-service-account.json")
-  )
+  .googledrive_authorize()
 
-  googledrive::drive_auth(
-    path = .app_sys("bookclubs4ds-service-account.json")
-  )
+  .googlesheets_authorize()
 }
 
 #' Check Club Sheet Modified Time
