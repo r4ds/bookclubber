@@ -13,11 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up service account
-        run: |
-          echo '${{secrets.GOOGLE_SERVICE_ACCOUNT}}' >> inst/bookclubs4ds-service-account.json
-        shell: bash {0}
-
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.2.2'
@@ -28,6 +23,7 @@ jobs:
 
       - name: Set up .Renviron
         run: |
+          echo "R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT=${{secrets.R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT}}" >> .Renviron
           echo "shinyslack_key=${{secrets.SHINYSLACK_KEY}}" >> .Renviron
           echo "SLACK_SKIPLOAD=TRUE" >> .Renviron
         shell: bash {0}
