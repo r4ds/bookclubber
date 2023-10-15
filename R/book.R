@@ -34,7 +34,7 @@
       {
         book_choices <- c(
           "PLEASE SELECT A BOOK" = "",
-          approved_books()$book_name
+          approved_books$book_name
         )
 
         query <- shiny::parseQueryString(session$clientData$url_search)
@@ -59,25 +59,6 @@
           )
         }
       }
-    )
-  )
-}
-
-#' Load Books
-#'
-#' @return A tibble with the valid books.
-#' @keywords internal
-.load_books <- function() {
-  cli::cli_alert("Refreshing books.")
-  return(
-    dplyr::arrange(
-      .read_gs4(
-        sheet = "Approved Books",
-        # Select a couple extra columns to avoid issues with rearrangements.
-        range = "A:D",
-        col_types = "cccc"
-      ),
-      tolower(.data$book_name)
     )
   )
 }

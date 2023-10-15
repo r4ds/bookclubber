@@ -20,13 +20,7 @@
   }) |>
     shiny::bindEvent(input$submit, ignoreNULL = FALSE)
 
-  # Load the books whenever club_sheet_modified changes.
-  approved_books <- shiny::reactive({
-    # Don't fetch this when we don't have info about the sheet.
-    shiny::req(club_sheet_modified())
-    .load_books()
-  }) |>
-    shiny::bindCache(club_sheet_modified())
+  approved_books <- bookclubdata::approved_books(refresh = TRUE)
 
   # Ditto for the signups.
   signups <- shiny::reactive({
@@ -50,7 +44,7 @@
   shiny::observe({
     shiny::req(
       input[[shiny::NS("timezone", "selected_zone")]],
-      approved_books(),
+      approved_books,
       signups(),
       input$book_name,
       slack_user_info()[["user_id"]]
