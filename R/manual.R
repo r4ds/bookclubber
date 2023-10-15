@@ -20,7 +20,7 @@ choose_time <- function(book_name,
   # Verify that book_name is in our list.
   # book_name <- rlang::arg_match(book_name, values = approved_books)
 
-  df <- .load_signups(.load_unavailable_times()$unavailable_time) |>
+  df <- .load_signups(.unavailable_times()$unavailable_time) |>
     dplyr::filter(.data$book_name == .env$book_name) |>
     dplyr::select(-"book_name")
 

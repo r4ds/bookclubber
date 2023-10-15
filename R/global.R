@@ -1,25 +1,8 @@
 #' Stuff to run at startup
 #'
-#' I'll have to see what should universally run at startup (eg, definitions of
-#' the possible slots) vs what should be checked during use (eg, we should load
-#' the "used" slots from time to time, although we can probably do that in
-#' global with a reactivePoll, so... yeah, this will get more stuff).
-#'
 #' @keywords internal
 .app_global <- function() {
   .authorize_google_services()
-
-  # I don't love using <<- to put things into the global environment, but right
-  # now this seems to be the cleanest way to do this.
-
-  # Load the globally unavailable times.
-  .unavailable_times <<- shiny::reactivePoll(
-    intervalMillis = 10L*60L*1000L, # No need to check often.
-    # intervalMillis = 1000L, # For testing
-    session = NULL,
-    checkFunc = .check_club_sheet,
-    valueFunc = .load_unavailable_times
-  )
 }
 
 #' Authorize Google for Sheets and Drive
@@ -55,38 +38,7 @@
     )
   )
   res <- googledrive::do_request(req)
-  # cli::cli_inform("Latest modified time: {res$modifiedTime}")
-  # cli::cli_inform("Latest size: {res$size}")
   return(res)
-}
-
-#' Load Unavailable Times
-#'
-#' @return A one-column tibble of unavailable times.
-#' @keywords internal
-.load_unavailable_times <- function() {
-  club_times <- .read_gs4(
-    sheet = "Clubs",
-    range = "B:C",
-    col_types = "ci"
-  ) |>
-    dplyr::transmute(
-      date_utc = .make_utc(
-        day = .data$`Day (UTC)`,
-        hour = .data$`Hour (UTC)`,
-        timezone = "UTC"
-      ),
-      next_hour = .data$date_utc + lubridate::hours(1),
-      prev_hour = .data$date_utc - lubridate::hours(1)
-    ) |>
-    tidyr::pivot_longer(
-      tidyr::everything(),
-      values_to = "unavailable_time"
-    ) |>
-    dplyr::distinct(.data$unavailable_time) |>
-    dplyr::arrange(.data$unavailable_time)
-
-  return(club_times)
 }
 
 #' Read a Sheet from the GS4 Workbook

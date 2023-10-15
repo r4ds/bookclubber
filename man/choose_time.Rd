@@ -4,7 +4,7 @@
 \alias{choose_time}
 \title{Pick a Convenient Time}
 \usage{
-choose_time(book_name, facilitator_id, r4ds_tz = "America/Chicago")
+choose_time(book_name, facilitator_id, required_choosers = 5)
 }
 \arguments{
 \item{book_name}{The abbreviation for an approved book, such as rpkgs or
@@ -13,8 +13,8 @@ mshiny.}
 \item{facilitator_id}{The Slack ID of the facilitator for this group.
 Available via the user's "full profile" in Slack.}
 
-\item{r4ds_tz}{A timezone in which to show the result, by default
-"America/Chicago" since that's what the R4DS calendar is in.}
+\item{required_choosers}{The minimum number of sign-ups necessary for the
+club to launch. Think really hard before changing this.}
 }
 \value{
 The best times, as a tibble.
