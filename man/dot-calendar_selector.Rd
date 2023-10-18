@@ -4,16 +4,13 @@
 \alias{.calendar_selector}
 \title{Server-side Calendar Selector}
 \usage{
-.calendar_selector(user_id, user_timezone, selected_book, signups)
+.calendar_selector(user_id, user_timezone, signups)
 }
 \arguments{
 \item{user_id}{Slack's unique id for this user.}
 
 \item{user_timezone}{The timezone currently chosen by the user (as a
 character scalar).}
-
-\item{selected_book}{The book currently selected by this user (as a character
-scalar).}
 
 \item{signups}{A dataframe of signup information, converted to UTC.}
 }

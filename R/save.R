@@ -1,79 +1,99 @@
-#' Save User Selections
-#'
-#' @inheritParams .shared-parameters
-#' @param time_table The user's selections.
-#'
-#' @return The sheet ID, invisibly.
-#' @keywords internal
+.submit_availability <- function(user_name,
+                                 user_id,
+                                 selected_book,
+                                 user_timezone,
+                                 time_table) {
+  if (selected_book == "") {
+    return(
+      .modal_fixit(error = "No book selected", action = "Please select a book.")
+    )
+  }
+  return(
+    .save_availability(
+      user_name,
+      user_id,
+      selected_book,
+      user_timezone,
+      time_table
+    )
+  )
+}
+
 .save_availability <- function(user_name,
                                user_id,
                                selected_book,
                                user_timezone,
                                time_table) {
-  if (selected_book == "") {
-    shiny::showModal(
-      shiny::modalDialog(
-        title = "Please select a book.",
-        easyClose = TRUE,
-        footer = shiny::tagList(shiny::modalButton("Ok"))
-      )
-    )
-  } else {
-    # Show a modal right away to prevent further submits.
-    shiny::showModal(
-      shiny::modalDialog(
-        title = "Submitting availability.",
-        footer = NULL,
-        fade = FALSE
-      )
-    )
+  .modal_wait(
+    "Submitting availability",
+    "Saving availability to the cloud. Please do not close this window."
+  )
+  .save_availability_impl(
+    user_name,
+    user_id,
+    selected_book,
+    user_timezone,
+    time_table
+  )
+  shiny::removeModal()
+}
 
-    # Unselect any illegal things they've managed to select, and set any NAs to
-    # FALSE.
-    unavailable_times <- .get_unavailable_times_tz(user_timezone)
-
-    selected_times <- rhandsontable::hot_to_r(time_table) |>
-      dplyr::mutate(hour = 0:23) |>
-      tidyr::pivot_longer(
-        cols = .data$Monday:.data$Sunday,
-        names_to = "day",
-        values_to = "available"
-      ) |>
-      dplyr::left_join(unavailable_times, by = c("day", "hour")) |>
-      dplyr::mutate(
-        unavailable = tidyr::replace_na(.data$unavailable, FALSE),
-        available = .data$available & !.data$unavailable,
-        available = tidyr::replace_na(.data$available, FALSE)
-      ) |>
-      dplyr::select(-"unavailable")
-
-    user_availability_df <- data.frame(
-      user_name = user_name,
-      user_id = user_id,
-      book_name = selected_book,
-      timezone = user_timezone,
-      submission_timestamp = as.character(Sys.time())
-    ) |>
-      dplyr::bind_cols(
-        selected_times
-      ) |>
-      dplyr::select(
-        "user_name",
-        "user_id",
-        "book_name",
-        "timezone",
-        "submission_timestamp",
-        "day",
-        "hour",
-        "available"
-      )
-
-    googlesheets4::sheet_append(
-      .gs4_sheet_id,
-      user_availability_df,
-      sheet = "Signups"
-    )
-
-    shiny::removeModal()
+.save_availability_impl <- function(user_name,
+                                    user_id,
+                                    selected_book,
+                                    user_timezone,
+                                    time_table) {
+  selected_times <- .time_table_process(time_table, user_timezone)
+  if (!nrow(selected_times)) {
+    return(bookclubdata::signups_clear_user_book(user_id, selected_book))
   }
+  .user_availabity_save(
+    selected_times,
+    user_name,
+    user_id,
+    user_timezone,
+    selected_book
+  )
+}
+
+.user_availabity_save <- function(selected_times,
+                                  user_name,
+                                  user_id,
+                                  user_timezone,
+                                  selected_book) {
+  bookclubdata::signups_write(
+    .user_availability_prepare(
+      selected_times,
+      user_name,
+      user_id,
+      user_timezone
+    ),
+    book_name = selected_book
+  )
+}
+
+.user_availability_prepare <- function(selected_times,
+                                       user_name,
+                                       user_id,
+                                       user_timezone) {
+  user_availability_df <- dplyr::bind_cols(
+    data.frame(
+      user_id = user_id,
+      submission_timestamp = .pretty_now(),
+      user_name = user_name,
+    ),
+    .user_availability_to_utc(selected_times, user_timezone)
+  )
+
+  return(user_availability_df)
+}
+
+.user_availability_to_utc <- function(selected_times, user_timezone) {
+  selected_times$timezone <- user_timezone
+  selected_times$datetime_utc <- .make_utc(
+    selected_times$day, selected_times$hour, selected_times$timezone
+  )
+  selected_times$day <- NULL
+  selected_times$hour <- NULL
+  return(selected_times)
 }

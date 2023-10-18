@@ -17,12 +17,7 @@
 choose_time <- function(book_name,
                         facilitator_id,
                         required_choosers = 5) {
-  # Verify that book_name is in our list.
-  # book_name <- rlang::arg_match(book_name, values = approved_books)
-
-  df <- .load_signups(.unavailable_times()$unavailable_time) |>
-    dplyr::filter(.data$book_name == .env$book_name) |>
-    dplyr::select(-"book_name")
+  df <- .load_book_signups(book_name)
 
   facilitator_times <- df |>
     dplyr::filter(.data$user_id == facilitator_id)

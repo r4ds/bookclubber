@@ -4,16 +4,13 @@
 \alias{.format_table}
 \title{Add a JavaScript formatter to the table}
 \usage{
-.format_table(hot, user_timezone, selected_book, signups)
+.format_table(hot, user_timezone, signups)
 }
 \arguments{
 \item{hot}{A [rhandsontable::rhandsontable()] object.}
 
 \item{user_timezone}{The timezone currently chosen by the user (as a
 character scalar).}
-
-\item{selected_book}{The book currently selected by this user (as a character
-scalar).}
 
 \item{signups}{A dataframe of signup information, converted to UTC.}
 }
