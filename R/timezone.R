@@ -36,12 +36,9 @@
 #' @keywords internal.
 .timezone_server <- function(id = "timezone") {
   shiny::moduleServer(id, function(input, output, session) {
-    # Update the timezone dropdown to use the detected zone by default. This is
-    # inspired by code from https://github.com/rpodcast/shinycal.
+    # Inspired by https://github.com/rpodcast/shinycal.
     shiny::observe({
       tz <- input$client_zone
-      cli::cli_inform("Updating timezone: {tz}")
-      # If it's blank or malformed, don't select anything by default.
       if (is.null(tz) || !tz %in% OlsonNames()) tz <- NULL
       shiny::updateSelectInput(
         inputId = "selected_zone",

@@ -18,3 +18,10 @@
 
   return(club_times)
 }
+
+.load_book_signups <- function(book_name) {
+  dplyr::filter(
+    bookclubdata::signups_read(book_name, refresh = TRUE),
+    !(datetime_utc %in% .unavailable_times()$unavailable_time)
+  )
+}

@@ -4,16 +4,13 @@
 \alias{.signups_to_matrix}
 \title{Summarize, pivot, and matricize signups}
 \usage{
-.signups_to_matrix(signups, user_timezone, selected_book)
+.signups_to_matrix(signups, user_timezone)
 }
 \arguments{
-\item{signups}{The result of [.load_signups()].}
+\item{signups}{The result of [.load_book_signups()].}
 
 \item{user_timezone}{The timezone currently chosen by the user (as a
 character scalar).}
-
-\item{selected_book}{The book currently selected by this user (as a character
-scalar).}
 }
 \value{
 A matrix of signups, with an integer count in each cell.

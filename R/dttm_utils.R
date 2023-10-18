@@ -99,3 +99,12 @@
   midnight_tz <- lubridate::with_tz(midnight, tzone = timezone)
   return(lubridate::minute(midnight_tz))
 }
+
+.pretty_now <- function() {
+  strftime(
+    lubridate::now(tzone = "UTC"),
+    tz = "UTC",
+    usetz = TRUE,
+    format = "%Y-%m-%d %H:%M:%S"
+  )
+}

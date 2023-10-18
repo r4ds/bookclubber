@@ -4,16 +4,13 @@
 \alias{.preset_table}
 \title{Set up the table for this user}
 \usage{
-.preset_table(user_id, user_timezone, selected_book, signups)
+.preset_table(user_id, user_timezone, signups)
 }
 \arguments{
 \item{user_id}{Slack's unique id for this user.}
 
 \item{user_timezone}{The timezone currently chosen by the user (as a
 character scalar).}
-
-\item{selected_book}{The book currently selected by this user (as a character
-scalar).}
 
 \item{signups}{A dataframe of signup information, converted to UTC.}
 }
