@@ -8,6 +8,14 @@
       .modal_fixit(error = "No book selected", action = "Please select a book.")
     )
   }
+  if (is.null(time_table)) {
+    return(
+      .modal_fixit(
+        error = "No availability",
+        action = "Please wait for the availability picker to load."
+      )
+    )
+  }
   return(
     .save_availability(
       user_name,
