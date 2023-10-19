@@ -156,7 +156,7 @@
       hour,
       ":",
       stringr::str_pad(
-        .tz_minutes(user_timezone, .next_weekday("Monday", user_timezone)),
+        bookclubdata::tz_minutes(user_timezone),
         width = 2L,
         pad = "0"
       ),

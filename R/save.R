@@ -98,7 +98,7 @@
 
 .user_availability_to_utc <- function(selected_times, user_timezone) {
   selected_times$timezone <- user_timezone
-  selected_times$datetime_utc <- .make_utc(
+  selected_times$datetime_utc <- bookclubdata::make_datetimes_utc(
     selected_times$day, selected_times$hour, selected_times$timezone
   )
   selected_times$day <- NULL
