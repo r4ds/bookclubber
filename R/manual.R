@@ -42,7 +42,9 @@ choose_time <- function(book_name,
     ) |>
     dplyr::arrange(dplyr::desc(.data$n))
 
-  facilitator_minutes <- .tz_minutes(facilitator_tz, df$datetime_utc[[1]])
+  facilitator_minutes <- bookclubdata::tz_minutes(
+    facilitator_tz, df$datetime_utc[[1]]
+  )
 
   if (facilitator_minutes > 0) {
     cli::cli_alert_warning(

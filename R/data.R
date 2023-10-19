@@ -1,10 +1,10 @@
 .unavailable_times <- function() {
   club_times <- bookclubdata::active_clubs_times(TRUE) |>
     dplyr::transmute(
-      date_utc = .make_utc(
-        day = .data$day_utc,
-        hour = .data$hour_utc,
-        timezone = "UTC"
+      date_utc = bookclubdata::make_datetimes_utc(
+        days = .data$day_utc,
+        hours = .data$hour_utc,
+        timezones = "UTC"
       ),
       next_hour = .data$date_utc + lubridate::hours(1),
       prev_hour = .data$date_utc - lubridate::hours(1)

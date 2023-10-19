@@ -156,7 +156,7 @@
       hour,
       ":",
       stringr::str_pad(
-        .tz_minutes(user_timezone, .next_weekday("Monday", user_timezone)),
+        bookclubdata::tz_minutes(user_timezone),
         width = 2L,
         pad = "0"
       ),
@@ -246,18 +246,18 @@
 }
 
 .time_table_availability <- function(time_table, user_timezone) {
-  time_table <- dplyr::left_join(
+  dplyr::left_join(
     time_table,
     .get_unavailable_times_tz(user_timezone),
     by = c("day", "hour")
-  )
-  time_table <- .time_table_availability_resolve(time_table)
-  return(time_table)
+  ) |>
+    .time_table_availability_resolve()
 }
 
 .time_table_availability_resolve <- function(time_table) {
-  time_table$available <- identical(time_table$available, TRUE) &
-    !identical(time_table$unavailable, TRUE)
+  time_table$available <- tidyr::replace_na(time_table$available, FALSE)
+  time_table$unavailable <- tidyr::replace_na(time_table$unavailable, FALSE)
+  time_table$available <- time_table$available & !time_table$unavailable
   time_table$unavailable <- NULL
   return(time_table)
 }
