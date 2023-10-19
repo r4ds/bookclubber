@@ -88,7 +88,7 @@
     data.frame(
       user_id = user_id,
       submission_timestamp = .pretty_now(),
-      user_name = user_name,
+      user_name = user_name
     ),
     .user_availability_to_utc(selected_times, user_timezone)
   )
