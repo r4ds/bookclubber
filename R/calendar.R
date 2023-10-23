@@ -58,7 +58,10 @@
   density_matrix <- .signups_to_matrix(signups, user_timezone)
 
   hot |>
-    rhandsontable::hot_cols(renderer = .generate_renderer_js(density_matrix))
+    rhandsontable::hot_cols(
+      renderer = .generate_renderer_js(density_matrix),
+      type = "checkbox"
+    )
 }
 
 #' Generate JavaScript for formatting the table
