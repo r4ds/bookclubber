@@ -60,7 +60,8 @@
   hot |>
     rhandsontable::hot_cols(
       renderer = .generate_renderer_js(density_matrix),
-      type = "checkbox"
+      type = "checkbox",
+      allowInvalid = TRUE
     )
 }
 
