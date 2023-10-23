@@ -126,7 +126,7 @@
     dplyr::mutate(
       available = dplyr::case_when(
         .data$unavailable ~ NA,
-        TRUE ~ .data$available
+        .default = .data$available
       )
     ) |>
     dplyr::select(-"unavailable") |>
@@ -153,7 +153,7 @@
   hour <- dplyr::case_when(
     hour == 0 ~ 12L,
     hour > 12 ~ hour - 12L,
-    TRUE ~ hour
+    .defalt = hour
   )
   return(
     paste0(
