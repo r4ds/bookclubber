@@ -58,7 +58,11 @@
   density_matrix <- .signups_to_matrix(signups, user_timezone)
 
   hot |>
-    rhandsontable::hot_cols(renderer = .generate_renderer_js(density_matrix))
+    rhandsontable::hot_cols(
+      renderer = .generate_renderer_js(density_matrix),
+      type = "checkbox",
+      allowInvalid = TRUE
+    )
 }
 
 #' Generate JavaScript for formatting the table
@@ -122,7 +126,7 @@
     dplyr::mutate(
       available = dplyr::case_when(
         .data$unavailable ~ NA,
-        TRUE ~ .data$available
+        .default = .data$available
       )
     ) |>
     dplyr::select(-"unavailable") |>
@@ -149,7 +153,7 @@
   hour <- dplyr::case_when(
     hour == 0 ~ 12L,
     hour > 12 ~ hour - 12L,
-    TRUE ~ hour
+    .default = hour
   )
   return(
     paste0(
