@@ -153,7 +153,7 @@
   hour <- dplyr::case_when(
     hour == 0 ~ 12L,
     hour > 12 ~ hour - 12L,
-    .defalt = hour
+    .default = hour
   )
   return(
     paste0(
