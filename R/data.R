@@ -1,13 +1,9 @@
 .unavailable_times <- function() {
-  club_times <- bookclubdata::active_clubs_times(TRUE) |>
-    dplyr::transmute(
-      date_utc = bookclubdata::make_datetimes_utc(
-        days = .data$day_utc,
-        hours = .data$hour_utc,
-        timezones = "UTC"
-      ),
-      next_hour = .data$date_utc + lubridate::hours(1),
-      prev_hour = .data$date_utc - lubridate::hours(1)
+  club_times <- bookclubdata::active_clubs_times() |>
+    dplyr::mutate(
+      next_hour = .data$datetime_utc + lubridate::hours(1),
+      prev_hour = .data$datetime_utc - lubridate::hours(1),
+      .keep = "used"
     ) |>
     tidyr::pivot_longer(
       tidyr::everything(),
