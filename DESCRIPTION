@@ -30,10 +30,12 @@ Imports:
     tidyr
 Suggests: 
     pkgload,
-    roxygen2
+    roxygen2,
+    testthat (>= 3.0.0)
 Remotes:
     r4ds/bookclubdata,
     r4ds/shinyslack
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+Config/testthat/edition: 3

@@ -4,10 +4,7 @@
 #'     DO NOT REMOVE.
 #' @keywords internal
 .app_server <- function(input, output, session) {
-  # I need the user info outside of the username display, so for now I collect
-  # it separately. Ideally it should be more strongly associated with the user
-  # code.
-  slack_user_info <- shinyslack::user_info(c("display_name", "user_id"))
+  slack_user_info <- .user_server()
 
   approved_books <- bookclubdata::approved_books(refresh = TRUE)
   signups <- shiny::reactive({
@@ -15,7 +12,6 @@
   })
 
   # Update and otherwise deal with the simple inputs across the top.
-  .user_server(slack_user_info = slack_user_info)
   # Should become fully module-ized later.
   .book_observer(approved_books = approved_books)
   .timezone_server()
