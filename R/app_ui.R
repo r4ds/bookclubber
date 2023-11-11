@@ -19,14 +19,9 @@
 
 .ui_settings <- function() {
   shiny::fluidRow(
-    shiny::column(width = 2, .user_ui()),
-    shiny::column(width = 2, .book_ui()),
-    shiny::column(width = 2, .timezone_ui()),
-    shiny::column(
-      width = 2,
-      offset = 1,
-      shiny::p(shiny::strong("Finish by submitting")),
-      shiny::actionButton(inputId = "submit", label = "Submit")
-    )
+    shiny::column(2, .user_ui()),
+    shiny::column(2, .book_ui()),
+    shiny::column(2, .timezone_ui()),
+    shiny::column(2, .submit_ui(), offset = 1)
   )
 }
