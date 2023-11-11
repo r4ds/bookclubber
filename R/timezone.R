@@ -7,16 +7,16 @@
 #' @keywords internal
 .timezone_ui <- function(id = "timezone") {
   return(
-    shiny::tagList(
+    tagList(
       # Add HTML to the page to store the timezone.
-      shiny::tags$input(
+      tags$input(
         type = "text",
-        id = shiny::NS(id, "client_zone"),
+        id = NS(id, "client_zone"),
         name = "Client zone",
         style = "display: none;"
       ),
-      shiny::selectInput(
-        inputId = shiny::NS(id, "selected_zone"),
+      selectInput(
+        inputId = NS(id, "selected_zone"),
         label = "Select Your Time Zone",
         choices = c(
           "DETECTING TIMEZONE" = "",
@@ -35,12 +35,12 @@
 #'   javascript.
 #' @keywords internal.
 .timezone_server <- function(id = "timezone") {
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # Inspired by https://github.com/rpodcast/shinycal.
-    shiny::observe({
+    observe({
       tz <- input$client_zone
       if (is.null(tz) || !tz %in% OlsonNames()) tz <- NULL
-      shiny::updateSelectInput(
+      updateSelectInput(
         inputId = "selected_zone",
         selected = tz
       )

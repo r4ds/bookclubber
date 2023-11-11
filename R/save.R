@@ -43,7 +43,7 @@
     user_timezone,
     time_table
   )
-  shiny::removeModal()
+  removeModal()
 }
 
 .save_availability_impl <- function(user_name,

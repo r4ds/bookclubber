@@ -7,7 +7,7 @@
 .book_ui <- function(id = "book_name") {
   # In a future update, this will become a proper module.
   return(
-    shiny::selectInput(
+    selectInput(
       inputId = id,
       label = "Select Book",
       choices = c("...loading..." = "")
@@ -24,26 +24,26 @@
 #' @keywords internal
 .book_observer <- function(id = "book_name",
                            approved_books,
-                           session = shiny::getDefaultReactiveDomain()) {
+                           session = getDefaultReactiveDomain()) {
   # This should be turned into a module.
 
   # Return an observer that sets the book drop-down. We still want to SHOW them
   # all of the options, though, so they can choose another book if they'd like.
   return(
-    shiny::observe(
+    observe(
       {
         book_choices <- c(
           "PLEASE SELECT A BOOK" = "",
           approved_books$book_name
         )
 
-        query <- shiny::parseQueryString(session$clientData$url_search)
+        query <- parseQueryString(session$clientData$url_search)
 
         if (
           !is.null(query[["bookname"]]) &&
           query[["bookname"]] %in% book_choices
         ) {
-          shiny::updateSelectInput(
+          updateSelectInput(
             session,
             id,
             label = "Book Selected",
@@ -51,7 +51,7 @@
             selected = query[["bookname"]]
           )
         } else {
-          shiny::updateSelectInput(
+          updateSelectInput(
             session,
             id,
             choices = book_choices,

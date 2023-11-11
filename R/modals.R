@@ -1,17 +1,17 @@
 .modal_fixit <- function(error, action) {
-  shiny::showModal(
-    shiny::modalDialog(
+  showModal(
+    modalDialog(
       action,
       title = paste("Error:", error),
       easyClose = TRUE,
-      footer = shiny::tagList(shiny::modalButton("Ok"))
+      footer = tagList(modalButton("Ok"))
     )
   )
 }
 
 .modal_wait <- function(action, message) {
-  shiny::showModal(
-    shiny::modalDialog(
+  showModal(
+    modalDialog(
       message,
       title = paste("Please wait:", action),
       footer = NULL,
