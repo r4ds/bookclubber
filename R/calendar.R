@@ -1,9 +1,9 @@
 .ui_calendar_row <- function() {
-  shiny::fluidRow(
-    shiny::column(
+  fluidRow(
+    column(
       width = 12,
-      shiny::h4("Select your availability"),
-      shiny::p(
+      h4("Select your availability"),
+      p(
         "(missing check boxes are unavailable; other R4DS clubs are using the
             Zoom account(s) at those times; colored cells indicate existing sign ups)"),
       .calendar_ui()
@@ -20,7 +20,7 @@
 .calendar_ui <- function(id = "calendar") {
   return(
     rhandsontable::rHandsontableOutput(
-      shiny::NS(id, "availability")
+      NS(id, "availability")
     )
   )
 }

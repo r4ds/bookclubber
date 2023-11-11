@@ -10,7 +10,7 @@
 \item{id}{The identifier of this input.}
 }
 \value{
-A shiny module.
+An HTML output element that can be included in a panel
 }
 \description{
 User UI Side

@@ -7,7 +7,7 @@
 .book_observer(
   id = "book_name",
   approved_books,
-  session = shiny::getDefaultReactiveDomain()
+  session = getDefaultReactiveDomain()
 )
 }
 \arguments{

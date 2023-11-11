@@ -46,7 +46,7 @@
 #' @keywords internal
 .golem_add_external_resources <- function() {
   golem::add_resource_path("www", .app_sys("app/www"))
-  shiny::tags$head(
+  tags$head(
     golem::bundle_resources(
       path = .app_sys("app/www"),
       app_title = "bookclubber"

@@ -4,12 +4,10 @@
 \alias{.user_server}
 \title{User Server Side}
 \usage{
-.user_server(id = "user_name", slack_user_info)
+.user_server(id = "user_name")
 }
 \arguments{
 \item{id}{The identifier of this input.}
-
-\item{slack_user_info}{The object that contains info from Slack.}
 }
 \value{
 A moduleServer object.
