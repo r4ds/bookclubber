@@ -4,6 +4,10 @@
 # bookclubber
 
 <!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/r4ds/bookclubber/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r4ds/bookclubber?branch=main)
+[![R-CMD-check](https://github.com/r4ds/bookclubber/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r4ds/bookclubber/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 {bookclubber} is a Shiny app for scheduling book clubs for the [R4DS
