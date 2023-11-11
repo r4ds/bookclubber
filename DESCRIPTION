@@ -14,7 +14,7 @@ Depends:
     R (>= 4.1)
 Imports: 
     base64enc,
-    bookclubdata (>= 0.0.1),
+    bookclubdata (>= 0.0.5),
     config (>= 0.3.1),
     dplyr,
     golem (>= 0.3.1),
