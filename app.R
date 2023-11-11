@@ -10,5 +10,5 @@ pkgload::load_all(
 
 options("golem.app.prod" = TRUE)
 options("shiny.autoload.r" = FALSE)
-# options("golem.app.prod" = FALSE)
+options("golem.app.prod" = FALSE)
 run_app()

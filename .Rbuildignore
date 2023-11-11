@@ -11,3 +11,5 @@
 ^data-raw$
 ^app\.R$
 ^rsconnect$
+_\.new\.png$
+_disable_autoload\.R$

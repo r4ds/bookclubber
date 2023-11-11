@@ -5,6 +5,7 @@
 #' @keywords internal
 .app_server <- function(input, output, session) {
   slack_user_info <- .user_server()
+  timezone <- .timezone_server()
 
   approved_books <- bookclubdata::approved_books(refresh = TRUE)
   signups <- reactive({
@@ -20,14 +21,14 @@
   # works and other attempts didn't.
   observe({
     req(
-      input[[NS("timezone", "selected_zone")]],
+      timezone(),
       approved_books,
       signups(),
       slack_user_info()[["user_id"]]
     )
     output[[NS("calendar", "availability")]] <- .calendar_selector(
       slack_user_info()[["user_id"]],
-      input[[NS("timezone", "selected_zone")]],
+      timezone(),
       signups()
     )
   })
@@ -38,7 +39,7 @@
       slack_user_info()[["display_name"]],
       slack_user_info()[["user_id"]],
       input$book_name,
-      input[[NS("timezone", "selected_zone")]],
+      timezone(),
       input[[NS("calendar", "availability")]]
     ),
     priority = 1000
