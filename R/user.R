@@ -10,11 +10,11 @@
   htmlOutput(outputId = NS(id, "user_name"))
 }
 
-#' User Server Side
+#' User module server
 #'
 #' @inheritParams .shared-parameters
 #'
-#' @return A moduleServer object.
+#' @return The user's `display_name` and `user_id` in a reactive list.
 #' @keywords internal
 .user_server <- function(id = "user_name") {
   moduleServer(id, function(input, output, session) {

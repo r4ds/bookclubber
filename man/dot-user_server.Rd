@@ -2,7 +2,7 @@
 % Please edit documentation in R/user.R
 \name{.user_server}
 \alias{.user_server}
-\title{User Server Side}
+\title{User module server}
 \usage{
 .user_server(id = "user_name")
 }
@@ -10,9 +10,9 @@
 \item{id}{The identifier of this input.}
 }
 \value{
-A moduleServer object.
+The user's `display_name` and `user_id` in a reactive list.
 }
 \description{
-User Server Side
+User module server
 }
 \keyword{internal}

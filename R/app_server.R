@@ -3,25 +3,22 @@
 #' @param input,output,session Internal parameters for shiny.
 #' @keywords internal
 .app_server <- function(input, output, session) {
+  # Set up input row.
   slack_user_info <- .user_server()
   timezone <- .timezone_server()
+  selected_book <- .book_server()
 
-  approved_books <- bookclubdata::approved_books(refresh = TRUE)
   signups <- reactive({
-    .load_book_signups(input$book_name)
+    .load_book_signups(selected_book())
   })
-
-  # Update and otherwise deal with the simple inputs across the top.
-  # Should become fully module-ized later.
-  .book_observer(approved_books = approved_books)
-  .timezone_server()
 
   # I need to sort out the reactivity to make this its own module. For now this
   # works and other attempts didn't.
   observe({
     req(
       timezone(),
-      approved_books,
+      !is.null(selected_book()),
+      selected_book() != "",
       signups(),
       slack_user_info()[["user_id"]]
     )
@@ -37,7 +34,7 @@
     .submit_availability(
       slack_user_info()[["display_name"]],
       slack_user_info()[["user_id"]],
-      input$book_name,
+      selected_book(),
       timezone(),
       input[[NS("calendar", "availability")]]
     ),
