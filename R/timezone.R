@@ -24,7 +24,7 @@
         label = "Select your timezone",
         choices = c(
           "...detecting timezone..." = "",
-          OlsonNames()
+          tzdb::tzdb_names()
         )
       )
     )
@@ -48,7 +48,8 @@
 #'
 #' @return The selected timezone as a reactive.
 #' @keywords internal.
-.timezone_server <- function(id = "timezone", allowed_zones = OlsonNames()) {
+.timezone_server <- function(id = "timezone",
+                             allowed_zones = tzdb::tzdb_names()) {
   moduleServer(id, function(input, output, session) {
     # Inspired by https://github.com/rpodcast/shinycal.
     observe({

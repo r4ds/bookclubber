@@ -4,7 +4,7 @@
 \alias{.timezone_server}
 \title{A module for setting timezones.}
 \usage{
-.timezone_server(id = "timezone", allowed_zones = OlsonNames())
+.timezone_server(id = "timezone", allowed_zones = tzdb::tzdb_names())
 }
 \arguments{
 \item{id}{The identifier of this input.}

@@ -29,7 +29,8 @@ Imports:
     shinyslack (>= 0.0.0.9008),
     stringr,
     tibble,
-    tidyr
+    tidyr,
+    tzdb
 Suggests: 
     pkgload,
     roxygen2,
