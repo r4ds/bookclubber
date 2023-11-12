@@ -6,3 +6,5 @@ bookclubs4ds-service-account.json
 rsconnect
 .secret
 .Renviron
+# {shinytest2}: Ignore new debug snapshots for `$expect_values()`
+*_.new.png

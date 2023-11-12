@@ -2,7 +2,7 @@
 % Please edit documentation in R/timezone.R
 \name{.timezone_ui}
 \alias{.timezone_ui}
-\title{UI to Select a Timezone}
+\title{UI to select a timezone}
 \usage{
 .timezone_ui(id = "timezone")
 }
@@ -14,6 +14,6 @@ A [shiny::tagList()] that adds the appropriate info to the app for
   timezone settings.
 }
 \description{
-UI to Select a Timezone
+UI to select a timezone
 }
 \keyword{internal}

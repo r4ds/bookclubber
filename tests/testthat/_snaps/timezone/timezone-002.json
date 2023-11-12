@@ -1,0 +1,12 @@
+{
+  "input": {
+    "timezone-client_zone": "Australia/Lord_Howe",
+    "timezone-selected_zone": "America/New_York"
+  },
+  "output": {
+    "selected_zone": "America/New_York"
+  },
+  "export": {
+
+  }
+}

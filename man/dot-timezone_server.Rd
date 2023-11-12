@@ -4,14 +4,15 @@
 \alias{.timezone_server}
 \title{A module for setting timezones.}
 \usage{
-.timezone_server(id = "timezone")
+.timezone_server(id = "timezone", allowed_zones = tzdb::tzdb_names())
 }
 \arguments{
 \item{id}{The identifier of this input.}
+
+\item{allowed_zones}{A character vector of allowed timezones.}
 }
 \value{
-A [shiny::moduleServer()] to update the timezone input using
-  javascript.
+The selected timezone as a reactive.
 }
 \description{
 A module for setting timezones.
