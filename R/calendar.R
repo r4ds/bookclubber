@@ -188,7 +188,7 @@
           .data$unavailable_time, user_timezone
         )
       ) |>
-      dplyr::transmute(
+      dplyr::mutate(
         day = lubridate::wday(
           .data$unavailable_time,
           week_start = 1,
@@ -196,8 +196,10 @@
           abbr = FALSE
         ),
         hour = lubridate::hour(.data$unavailable_time),
-        unavailable = TRUE
-      )
+        .keep = "none"
+      ) |>
+      dplyr::distinct(.data$day, .data$hour) |>
+      dplyr::mutate(unavailable = TRUE)
   )
 }
 
