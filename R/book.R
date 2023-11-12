@@ -23,27 +23,38 @@
 .book_server <- function(id = "book") {
   book_choices <- .book_get_choices()
   moduleServer(id, function(input, output, session) {
-    # Use the initial non-reactive query string from the request.
-    query <- parseQueryString(session$request$QUERY_STRING)
-    query_book <- book_choices[book_choices == query$bookname]
+    # I can't find a way to get a non-reactive version of the query string.
+    query_book <- reactive({
+      query <- getQueryString()
+      query_book <- book_choices[book_choices == query$bookname]
+    })
 
-    if (length(query_book) && query_book != "") {
-      updateSelectInput( # nocov start (can't find a way to automate)
-        session,
-        "selected_book",
-        label = "Book Selected",
-        choices = book_choices,
-        selected = query_book
-      ) # nocov end
-    } else {
-      updateSelectInput(
-        session,
-        "selected_book",
-        label = "Book Selected",
-        choices = book_choices,
-        selected = NULL
-      )
-    }
+    # Only use the query_string to update the input when the app initially
+    # loads. After that, the input is the source of truth.
+    observeEvent(
+      query_book(),
+      {
+        if (length(query_book()) && query_book() != input$selected_book) {
+          updateSelectInput( # nocov start (can't find a way to automate)
+            session,
+            "selected_book",
+            label = "Book Selected",
+            choices = book_choices,
+            selected = query_book()
+          ) # nocov end
+        } else {
+          updateSelectInput(
+            session,
+            "selected_book",
+            label = "Book Selected",
+            choices = book_choices,
+            selected = NULL
+          )
+        }
+      },
+      ignoreNULL = FALSE,
+      once = TRUE
+    )
 
     observeEvent(
       input$selected_book != "",
