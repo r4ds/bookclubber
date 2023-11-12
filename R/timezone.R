@@ -64,6 +64,6 @@
         selected = tz
       )
     })
-    reactive(input$selected_zone)
+    return(reactive(input$selected_zone))
   })
 }

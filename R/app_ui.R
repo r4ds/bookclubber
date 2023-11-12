@@ -20,8 +20,8 @@
 .ui_settings <- function() {
   fluidRow(
     column(2, .user_ui()),
-    column(2, .book_ui()),
     column(2, .timezone_ui()),
+    column(2, .book_ui()),
     column(2, .submit_ui(), offset = 1)
   )
 }

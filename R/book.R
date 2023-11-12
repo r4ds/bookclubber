@@ -4,61 +4,80 @@
 #'
 #' @return A shiny module to select a book.
 #' @keywords internal
-.book_ui <- function(id = "book_name") {
-  # In a future update, this will become a proper module.
+.book_ui <- function(id = "book") {
   return(
     selectInput(
-      inputId = id,
-      label = "Select Book",
+      inputId = NS(id, "selected_book"),
+      label = "Select a book",
       choices = c("...loading..." = "")
     )
   )
 }
 
-#' Load Books and Set Dropdown Values
+#' Book module server
 #'
 #' @inheritParams .shared-parameters
-#' @param approved_books A data.frame of approved books with column `book_name`.
 #'
-#' @return An observer that sets up the book drop-down menu.
+#' @return The selected book as a reactive.
 #' @keywords internal
-.book_observer <- function(id = "book_name",
-                           approved_books,
-                           session = getDefaultReactiveDomain()) {
-  # This should be turned into a module.
+.book_server <- function(id = "book") {
+  book_choices <- .book_get_choices()
+  moduleServer(id, function(input, output, session) {
+    query_book <- reactive({
+      query <- getQueryString()
+      query_book <- book_choices[book_choices == query$bookname]
+    })
 
-  # Return an observer that sets the book drop-down. We still want to SHOW them
-  # all of the options, though, so they can choose another book if they'd like.
-  return(
-    observe(
+    # Only change use the query_string to update the input when the app
+    # initially loads. After that, the input is the source of truth.
+    observeEvent(
+      query_book(),
       {
-        book_choices <- c(
-          "PLEASE SELECT A BOOK" = "",
-          approved_books$book_name
-        )
-
-        query <- parseQueryString(session$clientData$url_search)
-
-        if (
-          !is.null(query[["bookname"]]) &&
-          query[["bookname"]] %in% book_choices
-        ) {
-          updateSelectInput(
+        if (length(query_book()) && query_book() != input$selected_book) {
+          updateSelectInput( # nocov start (can't find a way to automate)
             session,
-            id,
+            "selected_book",
             label = "Book Selected",
             choices = book_choices,
-            selected = query[["bookname"]]
-          )
+            selected = query_book()
+          ) # nocov end
         } else {
           updateSelectInput(
             session,
-            id,
+            "selected_book",
+            label = "Book Selected",
             choices = book_choices,
             selected = NULL
           )
         }
-      }
+      },
+      ignoreNULL = FALSE,
+      once = TRUE
     )
-  )
+
+    observeEvent(
+      input$selected_book != "",
+      { # nocov start (Can't find a way to automate)
+        if (!length(query_book()) || input$selected_book != query_book()) {
+          query_string <- getQueryString()
+          query_string$bookname <- input$selected_book
+          query_string <- paste0(
+            "?",
+            paste(names(query_string), query_string, sep = "="),
+            collapse = "&"
+          )
+          updateQueryString(query_string)
+        }
+      }, # nocov end
+      ignoreInit = TRUE
+    )
+
+    return(reactive(input$selected_book))
+  })
+}
+
+# Abstract for potential mocking.
+.book_get_choices <- function() {
+  approved_books <- bookclubdata::approved_books(refresh = TRUE)
+  c("PLEASE SELECT A BOOK" = "", approved_books$book_name)
 }
