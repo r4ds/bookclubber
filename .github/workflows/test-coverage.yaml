@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT: ${{ secrets.R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT }}
 
     steps:
       - uses: actions/checkout@v3

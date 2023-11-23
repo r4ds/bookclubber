@@ -26,6 +26,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT: ${{ secrets.R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT }}
 
     steps:
       - uses: actions/checkout@v3
