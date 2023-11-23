@@ -29,12 +29,16 @@
       query_book <- book_choices[book_choices == query$bookname]
     })
 
-    # Only use the query_string to update the input when the app initially
-    # loads. After that, the input is the source of truth.
+    # Only use the query_string to update the input when the app initially loads
+    # AND THE UI INCLUDES THE INPUT. After that, the input is the source of
+    # truth.
     observeEvent(
       query_book(),
       {
-        if (length(query_book()) && query_book() != input$selected_book) {
+        if (
+          length(query_book()) && length(input$selected_book) &&
+          query_book() != input$selected_book
+        ) {
           updateSelectInput( # nocov start (can't find a way to automate)
             session,
             "selected_book",
