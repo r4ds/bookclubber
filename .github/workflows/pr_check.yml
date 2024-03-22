@@ -24,7 +24,7 @@ jobs:
       - name: Set up .Renviron
         run: |
           echo "R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT=${{secrets.R4DS_CLUB_GOOGLE_SERVICE_ACCOUNT}}" >> .Renviron
-          echo "shinyslack_key=${{secrets.SHINYSLACK_KEY}}" >> .Renviron
+          echo "SHINYSLACK_KEY=${{secrets.SHINYSLACK_KEY}}" >> .Renviron
           echo "SLACK_SKIPLOAD=TRUE" >> .Renviron
         shell: bash {0}
 
