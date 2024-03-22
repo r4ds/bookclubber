@@ -17,7 +17,7 @@ test_that("user server builds expected output", {
 })
 
 test_that("user server returns expected object", {
-  test_user_info <- list(display_name = "test_user", user_id = "test_user_id")
+  test_user_info <- list(user_id = "test_user_id", user_name = "test_user")
   local_mocked_bindings(
     .shinyslack_user_info = function(components) {
       # Return a function to simulate a reactive.
