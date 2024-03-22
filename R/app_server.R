@@ -32,7 +32,7 @@
   observeEvent(
     input$submit,
     .submit_availability(
-      slack_user_info()[["display_name"]],
+      slack_user_info()[["user_name"]],
       slack_user_info()[["user_id"]],
       selected_book(),
       timezone(),
