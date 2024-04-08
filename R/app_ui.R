@@ -11,7 +11,7 @@
 
 .ui_page <- function() {
   fluidPage(
-    titlePanel("R4DS Book Club Planner"),
+    titlePanel("DSLC Book Club Planner"),
     .ui_settings(),
     .ui_calendar_row()
   )

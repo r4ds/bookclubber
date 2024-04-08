@@ -10,8 +10,8 @@
 coverage](https://codecov.io/gh/r4ds/bookclubber/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r4ds/bookclubber?branch=main)
 <!-- badges: end -->
 
-{bookclubber} is a Shiny app for scheduling book clubs for the [R4DS
-Online Learning Community](https://r4ds.io/)
+{bookclubber} is a Shiny app for scheduling book clubs for the [Data
+Science Learning Community](https://dslc.io/)
 
 ## Code of Conduct
 

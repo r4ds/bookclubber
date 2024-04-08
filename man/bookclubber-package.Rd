@@ -4,9 +4,9 @@
 \name{bookclubber-package}
 \alias{bookclubber}
 \alias{bookclubber-package}
-\title{bookclubber: Schedule R4DS Book Clubs}
+\title{bookclubber: Schedule DSLC Book Clubs}
 \description{
-What the package does (one paragraph).
+The Data Science Learning Community hosts a number of book clubs in which learners read data science books together, generally with one learner leading the discussion each week. This package provides a shiny app to help run these clubs.
 }
 \seealso{
 Useful links:
