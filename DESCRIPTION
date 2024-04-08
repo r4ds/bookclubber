@@ -1,12 +1,15 @@
 Package: bookclubber
-Title: Schedule R4DS Book Clubs
+Title: Schedule DSLC Book Clubs
 Version: 0.3.1.9000
 Authors@R: c(
     person("Jon", "Harmon", , "jonthegeek@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4781-4346")),
     person("Priyanka", "Gagneja", , "priyankaigit@gmail.com", role = "aut")
   )
-Description: What the package does (one paragraph).
+Description: The Data Science Learning Community hosts a number of book
+    clubs in which learners read data science books together, generally
+    with one learner leading the discussion each week. This package
+    provides a shiny app to help run these clubs.
 License: MIT + file LICENSE
 URL: https://github.com/r4ds/bookclubber
 BugReports: https://github.com/r4ds/bookclubber/issues
@@ -41,4 +44,4 @@ Remotes:
     r4ds/shinyslack
 Config/testthat/edition: 3
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

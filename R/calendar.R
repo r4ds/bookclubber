@@ -4,7 +4,7 @@
       width = 12,
       h4("Select your availability"),
       p(
-        "(missing check boxes are unavailable; other R4DS clubs are using the
+        "(missing check boxes are unavailable; other DSLC clubs are using the
             Zoom account(s) at those times; colored cells indicate existing sign ups)"),
       .calendar_ui()
     )
